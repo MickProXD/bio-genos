@@ -1,0 +1,648 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://csjvexyodhoirjimjwrb.supabase.co wss://csjvexyodhoirjimjwrb.supabase.co; worker-src 'self'; manifest-src 'self'; base-uri 'self'; form-action 'self'">
+<meta name="theme-color" content="#1f5a34">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="BIO-GENOS">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>BIO-GENOS · Órdenes de servicio</title>
+<style>
+:root{--bg:#f4f6f4;--card:#fff;--text:#1b211b;--text2:#4d594d;--text3:#7e8c7e;--border:#dfe5df;--green:#2f9c57;--green-d:#1f5a34;--amber:#b7791f;--red:#c53030;--r:10px;--on:#fff}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1210;--card:#171c17;--text:#dde8dd;--text2:#9fb59f;--text3:#6a806a;--border:#2a332a;--green:#4ec87a;--green-d:#1f5a34;--amber:#e0b044;--red:#e05252;--on:#07140b}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--text);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.view{display:none;min-height:100vh}.view.on{display:block}
+.wrap{max-width:560px;margin:0 auto;padding:16px 16px calc(84px + env(safe-area-inset-bottom))}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:12px}
+h1{font-size:20px;margin:0}h2{font-size:15px;margin:0 0 8px}
+.btn{appearance:none;border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:var(--r);padding:11px 16px;font:inherit;font-weight:600;cursor:pointer}
+.btn.p{background:var(--green);border-color:var(--green);color:var(--on)}
+.btn.sm{padding:8px 12px;font-size:13px}.btn.w{width:100%}.btn:disabled{opacity:.55}
+input,textarea,select{width:100%;font:inherit;color:var(--text);background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:11px 12px}
+label.l{display:block;font-size:12px;font-weight:700;color:var(--text2);margin:12px 0 5px}
+.err{display:none;color:var(--red);font-size:13px;margin-top:10px}.err.show{display:block}
+.tag{display:inline-block;font-size:11px;font-weight:700;border-radius:20px;padding:2px 9px;border:1px solid var(--border)}
+.tag.g{color:var(--green);border-color:var(--green)}.tag.a{color:var(--amber);border-color:var(--amber)}.tag.r{color:var(--red);border-color:var(--red)}
+.mut{color:var(--text3);font-size:12px}.sec{color:var(--text2);font-size:13px}
+.top{position:sticky;top:0;z-index:5;background:var(--green-d);color:#fff;display:flex;align-items:center;gap:10px;padding:10px 14px;padding-top:calc(10px + env(safe-area-inset-top))}
+.top img{width:30px;height:30px;border-radius:7px;background:#fff}.top b{font-size:15px}.top .sp{flex:1}
+.dot{width:9px;height:9px;border-radius:50%;background:#7bdc9b;display:inline-block;margin-right:5px}.dot.off{background:#f0b44c}
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:5;display:flex;background:var(--card);border-top:1px solid var(--border);padding-bottom:env(safe-area-inset-bottom)}
+.tabs button{flex:1;border:0;background:none;color:var(--text3);font:inherit;font-weight:700;font-size:12px;padding:12px 4px}
+.tabs button.on{color:var(--green)}
+.ov{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.55);display:none;align-items:flex-start;justify-content:center;overflow:auto;padding:16px}
+.ov.on{display:flex}
+.md{background:var(--card);border:1px solid var(--border);border-radius:14px;width:100%;max-width:560px;margin:auto;padding:16px}
+.md h2{font-size:17px}.foot{display:flex;gap:8px;margin-top:14px}.foot .btn{flex:1}
+canvas.pad{width:100%;height:150px;background:#fff;border:1px dashed #9aa89a;border-radius:var(--r);touch-action:none;display:block}
+.row{display:flex;align-items:center;gap:8px}.row.b{justify-content:space-between}
+.kv{display:flex;flex-wrap:wrap;gap:0 14px}.kv>div{flex:1;min-width:150px;padding:6px 0}.kv small{display:block;color:var(--text3);font-size:11px}
+.toast{position:fixed;left:12px;right:12px;bottom:calc(72px + env(safe-area-inset-bottom));z-index:40;background:#1b211b;color:#fff;border-radius:10px;padding:11px 14px;font-size:14px;max-width:520px;margin:0 auto;display:none}
+.toast.e{background:#8b1f1f}.toast.s{background:#1f5a34}
+.lg{display:flex;flex-direction:column;align-items:center;gap:6px;margin:34px 0 20px;text-align:center}
+.lg img{width:84px;height:84px;border-radius:18px;background:#fff}
+a{color:var(--green)}
+</style>
+</head>
+<body>
+
+<!-- ACCESO -->
+<div id="v-login" class="view"><div class="wrap">
+  <div class="lg"><img src="icon-192.png" alt=""><h1>BIO-GENOS</h1><div class="sec">Órdenes de servicio digitales · BioAmbientalistik</div></div>
+  <div class="card">
+    <label class="l" style="margin-top:0">Correo</label>
+    <input id="lg-correo" type="email" autocomplete="username" inputmode="email">
+    <label class="l">Contraseña</label>
+    <input id="lg-pass" type="password" autocomplete="current-password" onkeydown="if(event.key==='Enter')login()">
+    <div class="err" id="lg-err">—</div>
+    <button class="btn p w" id="lg-btn" style="margin-top:14px" onclick="login()">Entrar</button>
+    <div style="text-align:center;margin-top:14px" class="sec">¿Aún no tienes cuenta? <a href="#" onclick="show('v-solicitud');return false">Solicítala</a></div>
+  </div>
+  <div id="inst-box" style="display:none;text-align:center"><button class="btn sm" onclick="instalarApp()">Instalar la app en mi teléfono</button></div>
+  <div class="mut" style="text-align:center;margin-top:10px" id="inst-ios"></div>
+</div></div>
+
+<!-- SOLICITUD DE CUENTA -->
+<div id="v-solicitud" class="view"><div class="wrap">
+  <div class="lg"><img src="icon-192.png" alt=""><h1>Solicitar cuenta</h1><div class="sec">Dirección revisará tu solicitud y te avisará.</div></div>
+  <div class="card">
+    <label class="l" style="margin-top:0">Nombre completo</label><input id="so-nombre" autocomplete="name">
+    <label class="l">Correo</label><input id="so-correo" type="email" inputmode="email" autocomplete="email">
+    <label class="l">Usuario (minúsculas, números, punto o guion)</label><input id="so-usuario" autocapitalize="none" autocomplete="off">
+    <label class="l">Puesto y funciones</label><textarea id="so-func" rows="2" placeholder="Ej. Operador de recolección, ruta HL"></textarea>
+    <div class="err" id="so-err">—</div>
+    <div class="err" id="so-ok" style="color:var(--green)">Solicitud enviada. Cuando Dirección la apruebe recibirás tus datos de acceso.</div>
+    <button class="btn p w" id="so-btn" style="margin-top:14px" onclick="enviarSolicitud()">Enviar solicitud</button>
+    <button class="btn w" style="margin-top:8px" onclick="show('v-login')">Volver</button>
+  </div>
+</div></div>
+
+<!-- VERIFICACIÓN EN DOS PASOS -->
+<div id="v-mfa" class="view"><div class="wrap">
+  <div class="lg"><img src="icon-192.png" alt=""><h1>Verificación</h1><div class="sec">Escribe el código de 6 dígitos de tu app de autenticación.</div></div>
+  <div class="card">
+    <input id="mfa-code" inputmode="numeric" maxlength="6" autocomplete="one-time-code" onkeydown="if(event.key==='Enter')verificarMfa()" style="font-size:22px;text-align:center;letter-spacing:6px">
+    <div class="err" id="mfa-err">—</div>
+    <button class="btn p w" style="margin-top:14px" onclick="verificarMfa()">Verificar</button>
+    <button class="btn w" style="margin-top:8px" onclick="salir(true)">Cancelar</button>
+  </div>
+</div></div>
+
+<!-- APP -->
+<div id="v-app" class="view">
+  <div class="top"><img src="icon-192.png" alt=""><b>BIO-GENOS</b><span class="sp"></span><span id="net" class="mut" style="color:#d6ead9"><i class="dot"></i><span>En línea</span></span><button class="btn sm" style="background:transparent;color:#fff;border-color:rgba(255,255,255,.4)" onclick="abrirMenu()">Menú</button></div>
+  <div class="wrap">
+    <div id="t-ordenes">
+      <div class="row b" style="margin-bottom:10px"><button class="btn sm" onclick="cambiarDia(-1)">‹</button><div style="text-align:center"><div id="mo-fecha" style="font-weight:700"></div><a href="#" id="mo-hoy" class="mut" onclick="irHoy();return false">Ir a hoy</a></div><button class="btn sm" onclick="cambiarDia(1)">›</button></div>
+      <div id="mo-estado"></div><div id="mo-lista"></div>
+    </div>
+    <div id="t-perfil" style="display:none"><div id="mp"></div></div>
+  </div>
+  <div class="tabs"><button id="tb-ordenes" class="on" onclick="tab('ordenes')">Órdenes</button><button id="tb-perfil" onclick="tab('perfil')">Mi perfil</button></div>
+</div>
+
+<!-- MENÚ -->
+<div class="ov" id="m-menu" onclick="if(event.target===this)cerrar('m-menu')"><div class="md">
+  <h2 id="mn-nombre"></h2><div class="mut" id="mn-ver" style="margin-bottom:12px"></div>
+  <button class="btn w" style="margin-bottom:8px" onclick="cerrar('m-menu');abrirPass(false)">Cambiar contraseña</button>
+  <button class="btn w" id="mn-inst" style="margin-bottom:8px;display:none" onclick="instalarApp()">Instalar la app</button>
+  <button class="btn w" style="margin-bottom:8px" onclick="cerrar('m-menu');sincronizarCola(true)">Enviar órdenes pendientes</button>
+  <button class="btn w" onclick="salir()">Cerrar sesión</button>
+  <div class="err" id="mn-err">—</div>
+</div></div>
+
+<!-- UBICACIÓN OBLIGATORIA -->
+<div class="ov" id="m-ubic"><div class="md">
+  <h2>Activa tu ubicación</h2>
+  <div class="sec">BIO-GENOS necesita tu ubicación para comprobar dónde se realiza cada servicio. Es obligatoria para continuar. Solo se consulta al llegar y al cerrar una orden; no se te rastrea de forma continua.</div>
+  <div id="ub-ayuda" class="mut" style="display:none;margin-top:10px"></div>
+  <div class="err" id="ub-err">—</div>
+  <div class="foot"><button class="btn" onclick="salir(true)">Cerrar sesión</button><button class="btn p" id="ub-btn" onclick="pedirUbicacion()">Permitir ubicación</button></div>
+</div></div>
+
+<!-- SELECCIONAR MI INFORMACIÓN -->
+<div class="ov" id="m-vinc"><div class="md">
+  <h2>Seleccionar mi información</h2>
+  <div class="sec" style="margin-bottom:10px">Busca tu nombre entre el personal que RH registró y confirma que eres tú. Así se ligan a tu cuenta tus órdenes de servicio.</div>
+  <div id="vi-p1"><label class="l" style="margin-top:0">Busca tu nombre</label><input id="vi-q" placeholder="Al menos 3 letras" oninput="buscarVinc()" autocomplete="off"><div id="vi-res" style="margin-top:8px"></div></div>
+  <div id="vi-p2" style="display:none"><div class="card" id="vi-sel"></div><label class="l" style="margin-top:0">Confirma que eres tú</label><input id="vi-dato" placeholder="Fecha de nacimiento (DD/MM/AAAA) o últimos 4 del CURP" autocomplete="off" onkeydown="if(event.key==='Enter')confirmarVinc()"><div class="mut" style="margin-top:5px">Es el dato que RH registró en tu expediente.</div></div>
+  <div class="err" id="vi-err">—</div>
+  <div class="foot"><button class="btn" onclick="salir(true)">Cerrar sesión</button><button class="btn" id="vi-back" style="display:none" onclick="vincAtras()">Atrás</button><button class="btn p" id="vi-ok" style="display:none" onclick="confirmarVinc()">Confirmar</button></div>
+</div></div>
+
+<!-- CAMBIAR CONTRASEÑA -->
+<div class="ov" id="m-pass"><div class="md">
+  <h2>Cambiar contraseña</h2>
+  <div class="sec" id="pw-aviso" style="display:none;margin-bottom:8px">Tu contraseña temporal venció. Debes cambiarla para continuar.</div>
+  <label class="l" style="margin-top:0">Nueva contraseña (mínimo 8 caracteres)</label><input id="pw-1" type="password" autocomplete="new-password">
+  <label class="l">Confirmar</label><input id="pw-2" type="password" autocomplete="new-password">
+  <div class="err" id="pw-err">—</div>
+  <div class="foot"><button class="btn" id="pw-x" onclick="cerrar('m-pass')">Cancelar</button><button class="btn p" onclick="guardarPass()">Guardar</button></div>
+</div></div>
+
+<!-- CIERRE DE ORDEN -->
+<div class="ov" id="m-cierre"><div class="md">
+  <h2 id="oc-titulo">Cerrar orden</h2>
+  <div id="oc-resumen" class="sec"></div>
+  <label class="l">Tipo de residuo *</label><div id="oc-tipos" style="display:flex;flex-direction:column;gap:9px"></div>
+  <label class="l">Volumen</label><input id="oc-vol" placeholder="Ej. 3 x 1,100 Lt.">
+  <label class="l">Comentarios</label><textarea id="oc-com" rows="2"></textarea>
+  <label class="l">Nombre de quien recibe *</label><input id="oc-nom" autocomplete="off">
+  <label class="l">Firma de quien recibe * <a href="#" style="float:right" onclick="ocLimpiar('c');return false">Borrar</a></label><canvas id="oc-pc" class="pad" width="600" height="220"></canvas>
+  <label class="l">Firma del operador * <a href="#" style="float:right" onclick="ocLimpiar('o');return false">Borrar</a></label><canvas id="oc-po" class="pad" width="600" height="220"></canvas>
+  <div class="mut" style="margin-top:8px">Se registran la ubicación y la hora de tu teléfono. Sin señal, la orden se guarda y se envía sola al recuperar conexión.</div>
+  <div class="err" id="oc-err">—</div>
+  <div class="foot"><button class="btn" onclick="cerrarCierre()">Cancelar</button><button class="btn p" id="oc-ok" onclick="confirmarCierre()">Cerrar orden</button></div>
+</div></div>
+
+<!-- NO REALIZADA -->
+<div class="ov" id="m-noreal"><div class="md">
+  <h2>Servicio no realizado</h2><div id="nr-res" class="sec"></div>
+  <label class="l">Motivo *</label><textarea id="nr-mot" rows="3" placeholder="Ej. Cliente cerrado, sin acceso al contenedor…"></textarea>
+  <div class="err" id="nr-err">—</div>
+  <div class="foot"><button class="btn" onclick="cerrar('m-noreal')">Cancelar</button><button class="btn p" onclick="confirmarNoReal()">Marcar no realizada</button></div>
+</div></div>
+
+<!-- COMPROBANTE LISTO -->
+<div class="ov" id="m-listo"><div class="md">
+  <h2 id="li-titulo">Comprobante</h2>
+  <div class="sec" id="li-texto"></div>
+  <div class="foot" style="flex-direction:column">
+    <button class="btn p w" onclick="compartirPdf()">Compartir comprobante</button>
+    <button class="btn w" onclick="descargarPdf()">Descargar PDF</button>
+    <button class="btn w" onclick="cerrar('m-listo')">Listo</button>
+  </div>
+</div></div>
+
+<div class="toast" id="toast"></div>
+
+<script src="supabase.js"></script>
+<script src="jspdf.umd.min.js"></script>
+<script>
+'use strict';
+const APP_VERSION = '1.1.0';
+const SUPABASE_URL = 'https://csjvexyodhoirjimjwrb.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_DUoYx9ZFV6pP_ryZ2g2tSg_1jPXeRZg';   // llave pública: todo el acceso real lo limita RLS
+const TZ = 'America/Mexico_City';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { auth:{ persistSession:true, autoRefreshToken:true, detectSessionInUrl:false } });
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let U = null, _mfaId = null, _fecha = null, _sinSesion = false;
+
+/* ── utilidades ── */
+function show(id){ document.querySelectorAll('.view').forEach(v => v.classList.toggle('on', v.id === id)); window.scrollTo(0,0); }
+function abrir(id){ $(id).classList.add('on'); }
+function cerrar(id){ $(id).classList.remove('on'); }
+let _tt; function toast(m, k){ const t = $('toast'); t.textContent = m; t.className = 'toast ' + (k === 'error' ? 'e' : k === 'success' ? 's' : ''); t.style.display = 'block'; clearTimeout(_tt); _tt = setTimeout(() => t.style.display = 'none', 4200); }
+function say(id, t){ const e = $(id); e.textContent = t; e.classList.add('show'); }
+function hide(id){ $(id).classList.remove('show'); }
+const hoyLocal = () => new Date().toLocaleDateString('en-CA', { timeZone:TZ });
+const fmtHora = iso => iso ? new Date(iso).toLocaleTimeString('es-MX', { hour:'2-digit', minute:'2-digit', timeZone:TZ }) : '—';
+const fmtF = f => f ? new Date(String(f).substring(0,10) + 'T12:00:00').toLocaleDateString('es-MX', { day:'numeric', month:'short', year:'numeric' }) : '—';
+const fmtFC = f => new Date(f + 'T12:00:00').toLocaleDateString('es-MX', { weekday:'short', day:'numeric', month:'short' });
+function lsGet(k, d){ try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch(e){ return d; } }
+function lsSet(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch(e){ return false; } }
+function esErrorRed(e){ return !navigator.onLine || /failed to fetch|networkerror|network request|load failed|timeout|offline/i.test(String(e?.message || e || '')); }
+function dataUrlToBlob(d){ const [h, b] = d.split(','), mime = h.match(/:(.*?);/)[1], bin = atob(b), u = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); return new Blob([u], { type:mime }); }
+function obtenerUbicacion(){
+  return new Promise((res, rej) => {
+    if (!navigator.geolocation) return rej(new Error('Tu dispositivo no permite obtener la ubicación.'));
+    navigator.geolocation.getCurrentPosition(p => res(p.coords),
+      e => rej(new Error(e.code === 1 ? 'Permite el acceso a la ubicación en tu navegador.' : 'No se pudo obtener tu ubicación. Inténtalo de nuevo.')),
+      { enableHighAccuracy:true, timeout:15000, maximumAge:0 });
+  });
+}
+const kCola = () => 'bg_cola_' + U.id, kOrd = () => 'bg_ord_' + U.id;
+
+/* ── instalar / service worker ── */
+let _prompt = null;
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); _prompt = e; $('inst-box').style.display = 'block'; $('mn-inst').style.display = 'block'; });
+async function instalarApp(){ if (!_prompt) return; _prompt.prompt(); try { await _prompt.userChoice; } catch(e){} _prompt = null; $('inst-box').style.display = 'none'; $('mn-inst').style.display = 'none'; }
+if (/iphone|ipad|ipod/i.test(navigator.userAgent) && !navigator.standalone) $('inst-ios').textContent = 'En iPhone: toca Compartir y luego «Agregar a pantalla de inicio».';
+if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+
+/* ── acceso ── */
+async function login(){
+  hide('lg-err'); const email = $('lg-correo').value.trim().toLowerCase(), password = $('lg-pass').value;
+  if (!email || !password) return say('lg-err', 'Escribe tu correo y contraseña');
+  const b = $('lg-btn'); b.disabled = true; b.textContent = 'Verificando…';
+  const { error } = await sb.auth.signInWithPassword({ email, password });
+  b.disabled = false; b.textContent = 'Entrar'; $('lg-pass').value = '';
+  if (error) return say('lg-err', esErrorRed(error) ? 'Sin conexión. Necesitas señal para iniciar sesión.' : 'Correo o contraseña incorrectos');
+  await arrancar();
+}
+async function enviarSolicitud(){
+  hide('so-err'); hide('so-ok');
+  const nombre = $('so-nombre').value.trim(), correo = $('so-correo').value.trim().toLowerCase(), usuario = $('so-usuario').value.trim().toLowerCase(), funciones = $('so-func').value.trim();
+  if (!nombre) return say('so-err', 'Escribe tu nombre completo');
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) return say('so-err', 'Escribe un correo válido');
+  if (usuario.length < 3 || !/^[a-z0-9._-]+$/.test(usuario)) return say('so-err', 'Usuario: mínimo 3 caracteres, solo minúsculas, números, punto o guion');
+  if (!funciones) return say('so-err', 'Describe brevemente tu puesto y funciones');
+  const b = $('so-btn'); b.disabled = true;
+  const { data, error } = await sb.functions.invoke('solicitar-cuenta', { body:{ nombre, correo, usuario, funciones } });
+  b.disabled = false;
+  if (error || data?.error){ let m = data?.error; if (!m) try { m = (await error.context.json()).error; } catch(e){} return say('so-err', m || error.message); }
+  ['so-nombre','so-correo','so-usuario','so-func'].forEach(i => $(i).value = ''); $('so-ok').classList.add('show');
+}
+async function verificarMfa(){
+  hide('mfa-err'); const code = $('mfa-code').value.trim();
+  if (!/^\d{6}$/.test(code)) return say('mfa-err', 'Ingresa el código de 6 dígitos');
+  const { data: ch, error: e1 } = await sb.auth.mfa.challenge({ factorId:_mfaId });
+  if (e1) return say('mfa-err', e1.message);
+  const { error: e2 } = await sb.auth.mfa.verify({ factorId:_mfaId, challengeId:ch.id, code });
+  if (e2) return say('mfa-err', 'Código incorrecto, intenta de nuevo');
+  $('mfa-code').value = ''; await arrancar();
+}
+async function arrancar(){
+  let session = null;
+  try { ({ data:{ session } } = await sb.auth.getSession()); } catch(e){}
+  if (!session){
+    const c = lsGet('bg_ultimo', null);
+    if (!navigator.onLine && c){ U = c; _sinSesion = true; return entrar(); }   // sin señal: se abre con lo guardado
+    return show('v-login');
+  }
+  try {
+    const { data: aal } = await sb.auth.mfa.getAuthenticatorAssuranceLevel();
+    if (aal.currentLevel === 'aal1' && aal.nextLevel === 'aal2'){
+      const { data: f } = await sb.auth.mfa.listFactors(); const t = (f.totp || []).find(x => x.status === 'verified');
+      if (t){ _mfaId = t.id; return show('v-mfa'); }
+    }
+  } catch(e){}
+  let perfil = null;
+  const { data, error } = await sb.from('profiles').select('*').eq('id', session.user.id).single();
+  if (data) perfil = data;
+  else if (esErrorRed(error)){ const c = lsGet('bg_ultimo', null); if (c && c.id === session.user.id){ U = c; return entrar(); } }
+  if (!perfil){ toast('No se encontró tu perfil de acceso', 'error'); await sb.auth.signOut(); return show('v-login'); }
+  if (!perfil.activo){ toast('Tu cuenta está desactivada. Contacta a Dirección.', 'error'); await sb.auth.signOut(); return show('v-login'); }
+  if (perfil.role !== 'chofer'){
+    await sb.auth.signOut(); show('v-login');
+    return say('lg-err', 'Esta app es solo para operativos. Usa Bio-centralis con tu cuenta.');
+  }
+  U = { id:perfil.id, nombre:perfil.nombre, role:perfil.role, colaboradorId:perfil.colaborador_id, ubicAt:perfil.ubicacion_permiso_at, debePass:!!perfil.debe_cambiar_password, passAt:perfil.password_set_at };
+  lsSet('bg_ultimo', U);
+  await entrar();
+}
+async function entrar(){
+  show('v-app'); $('mn-nombre').textContent = U.nombre; $('mn-ver').textContent = 'BIO-GENOS v' + APP_VERSION;
+  tab('ordenes'); netEstado();
+  if (_sinSesion) return;
+  await exigirUbicacion();
+  if (!U.colaboradorId) await exigirVinculo();
+  if (U.debePass){
+    const h = (Date.now() - new Date(U.passAt).getTime()) / 3600000;
+    if (h >= 24) abrirPass(true); else toast(`Tienes una contraseña temporal. Cámbiala en las próximas ${Math.ceil(24 - h)} horas.`);
+  }
+  renderOrdenes(); sincronizarCola();
+}
+async function salir(forzar){
+  const pend = U ? lsGet(kCola(), []).length : 0;
+  if (pend && !forzar){ $('mn-err').textContent = `Tienes ${pend} orden${pend > 1 ? 'es' : ''} sin enviar. Conéctate y envíalas antes de cerrar sesión.`; $('mn-err').classList.add('show'); return; }
+  try { await sb.auth.signOut(); } catch(e){}
+  ['m-menu','m-ubic','m-vinc','m-pass','m-cierre','m-noreal'].forEach(cerrar);
+  U = null; _sinSesion = false; show('v-login'); $('lg-correo').focus();
+}
+function abrirMenu(){ hide('mn-err'); abrir('m-menu'); }
+function tab(t){
+  $('t-ordenes').style.display = t === 'ordenes' ? 'block' : 'none'; $('t-perfil').style.display = t === 'perfil' ? 'block' : 'none';
+  $('tb-ordenes').classList.toggle('on', t === 'ordenes'); $('tb-perfil').classList.toggle('on', t === 'perfil');
+  if (t === 'perfil') renderPerfil(); else if (U) renderOrdenes();
+}
+function netEstado(){ const o = navigator.onLine; $('net').innerHTML = `<i class="dot ${o ? '' : 'off'}"></i><span>${o ? 'En línea' : 'Sin señal'}</span>`; }
+window.addEventListener('online', () => { netEstado(); if (U && !_sinSesion) sincronizarCola(); });
+window.addEventListener('offline', netEstado);
+document.addEventListener('visibilitychange', () => { if (!document.hidden && U && !_sinSesion && $('t-ordenes').style.display !== 'none' && !document.querySelector('.ov.on')) renderOrdenes(); });
+
+/* ── ubicación obligatoria ── */
+let _ubRes = null, _ubVig = false;
+async function estadoUbic(){ try { if (navigator.permissions?.query) return (await navigator.permissions.query({ name:'geolocation' })).state; } catch(e){} return 'unknown'; }
+function ayudaUbic(st){ const a = $('ub-ayuda'), b = $('ub-btn'); if (st === 'denied'){ a.style.display = 'block'; a.textContent = 'La ubicación está bloqueada para este sitio. Toca el candado junto a la dirección (o abre los ajustes del sitio), entra a Permisos y cambia Ubicación a Permitir. Después pulsa Reintentar.'; b.textContent = 'Reintentar'; } else { a.style.display = 'none'; b.textContent = 'Permitir ubicación'; } }
+async function exigirUbicacion(){
+  const st = await estadoUbic();
+  if (st !== 'granted'){ ayudaUbic(st); hide('ub-err'); abrir('m-ubic'); await new Promise(r => { _ubRes = r; }); }
+  if (!U.ubicAt){ U.ubicAt = new Date().toISOString(); lsSet('bg_ultimo', U); try { sb.from('profiles').update({ ubicacion_permiso_at:U.ubicAt }).eq('id', U.id).then(() => {}, () => {}); } catch(e){} }
+  if (!_ubVig){ _ubVig = true; try { const ps = await navigator.permissions.query({ name:'geolocation' }); ps.onchange = () => { if (ps.state !== 'granted' && U){ ayudaUbic(ps.state); abrir('m-ubic'); } }; } catch(e){} }
+}
+async function pedirUbicacion(){
+  const b = $('ub-btn'); b.disabled = true; hide('ub-err');
+  const ok = () => { cerrar('m-ubic'); const r = _ubRes; _ubRes = null; if (r) r(); };
+  try { await obtenerUbicacion(); ok(); }
+  catch(e){ const st = await estadoUbic(); if (st === 'granted') ok(); else { say('ub-err', e.message); ayudaUbic(st); } }
+  finally { b.disabled = false; }
+}
+
+/* ── seleccionar mi información ── */
+let _viRes = [], _viSel = null, _viT = null, _viPromise = null;
+function exigirVinculo(){
+  _viSel = null; $('vi-q').value = ''; $('vi-dato').value = ''; $('vi-res').innerHTML = ''; hide('vi-err'); vincAtras(true); abrir('m-vinc');
+  return new Promise(r => { _viPromise = r; });
+}
+function buscarVinc(){
+  clearTimeout(_viT); const q = $('vi-q').value.trim(), box = $('vi-res');
+  if (q.length < 3){ box.innerHTML = '<div class="mut">Escribe al menos 3 letras.</div>'; return; }
+  _viT = setTimeout(async () => {
+    box.innerHTML = '<div class="mut">Buscando…</div>';
+    const { data, error } = await sb.rpc('buscar_colaboradores_para_vincular', { p_texto:q });
+    if ($('vi-q').value.trim() !== q) return;
+    if (error){ box.innerHTML = `<div class="err show">${esc(error.message)}</div>`; return; }
+    _viRes = data || [];
+    box.innerHTML = _viRes.length ? _viRes.map((r, i) => `<div class="card" style="cursor:pointer;margin-bottom:8px" onclick="elegirVinc(${i})"><b>${esc(r.nombre)}</b><div class="mut">${esc(r.puesto || '')}</div></div>`).join('')
+      : '<div class="sec">No encontramos ese nombre entre el personal sin cuenta ligada. Pide a RH que te registre y vuelve a entrar.</div>';
+  }, 300);
+}
+function elegirVinc(i){ _viSel = _viRes[i]; if (!_viSel) return; $('vi-sel').innerHTML = `<b>${esc(_viSel.nombre)}</b><div class="mut">${esc(_viSel.puesto || '')}</div>`; $('vi-p1').style.display = 'none'; $('vi-p2').style.display = 'block'; $('vi-back').style.display = ''; $('vi-ok').style.display = ''; hide('vi-err'); setTimeout(() => $('vi-dato').focus(), 80); }
+function vincAtras(s){ _viSel = null; $('vi-p1').style.display = 'block'; $('vi-p2').style.display = 'none'; $('vi-back').style.display = 'none'; $('vi-ok').style.display = 'none'; if (!s) hide('vi-err'); }
+async function confirmarVinc(){
+  const dato = $('vi-dato').value.trim(); if (!_viSel) return;
+  if (!dato) return say('vi-err', 'Escribe tu fecha de nacimiento o los últimos 4 del CURP');
+  const b = $('vi-ok'); b.disabled = true; hide('vi-err');
+  try {
+    const { data, error } = await sb.rpc('vincular_mi_colaborador', { p_colaborador:_viSel.id, p_dato:dato });
+    if (error) return say('vi-err', error.message);
+    if (!data?.ok){ let t = data?.error || 'Los datos no coinciden'; if (typeof data?.intentos_restantes === 'number') t += ` (te quedan ${data.intentos_restantes} intento${data.intentos_restantes === 1 ? '' : 's'})`; return say('vi-err', t); }
+    U.colaboradorId = data.colaborador_id; lsSet('bg_ultimo', U); cerrar('m-vinc'); toast('Información ligada: ' + data.nombre, 'success');
+    const r = _viPromise; _viPromise = null; if (r) r();
+  } finally { b.disabled = false; }
+}
+
+/* ── contraseña ── */
+let _passForzado = false;
+function abrirPass(forzado){ _passForzado = !!forzado; $('pw-aviso').style.display = forzado ? 'block' : 'none'; $('pw-x').style.display = forzado ? 'none' : ''; $('pw-1').value = ''; $('pw-2').value = ''; hide('pw-err'); abrir('m-pass'); }
+async function guardarPass(){
+  const a = $('pw-1').value, b = $('pw-2').value; hide('pw-err');
+  if (a.length < 8) return say('pw-err', 'Mínimo 8 caracteres');
+  if (a !== b) return say('pw-err', 'Las contraseñas no coinciden');
+  const { error } = await sb.auth.updateUser({ password:a }); if (error) return say('pw-err', error.message);
+  await sb.from('profiles').update({ debe_cambiar_password:false }).eq('id', U.id);
+  U.debePass = false; lsSet('bg_ultimo', U); _passForzado = false; cerrar('m-pass'); toast('Contraseña actualizada', 'success');
+}
+
+/* ═══ ÓRDENES DE SERVICIO ═══ */
+const TIPOS = [{ k:'RESIDUOS SOLIDOS URBANOS', t:'RSU · Residuos sólidos urbanos' }, { k:'RESIDUOS DE MANEJO ESPECIAL', t:'RME · Residuos de manejo especial' }];
+const EST = { programada:['Programada','a'], en_sitio:['En sitio','g'], completada:['Completada','g'], no_realizada:['No realizada','r'] };
+let _ords = [], _cierre = null, _padC = null, _padO = null, _noreal = null, _sync = false;
+
+function crearPad(id){
+  const old = $(id), cv = old.cloneNode(true); old.parentNode.replaceChild(cv, old);
+  const ctx = cv.getContext('2d'), pad = { cv, ctx, dib:false, mov:0 };
+  pad.limpiar = () => { ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, cv.width, cv.height); ctx.strokeStyle = '#1a2e1a'; ctx.lineWidth = 2.6; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; pad.mov = 0; };
+  pad.limpiar();
+  const pos = e => { const r = cv.getBoundingClientRect(); return { x:(e.clientX - r.left) * cv.width / r.width, y:(e.clientY - r.top) * cv.height / r.height }; };
+  cv.addEventListener('pointerdown', e => { e.preventDefault(); try { cv.setPointerCapture(e.pointerId); } catch(_){} pad.dib = true; const p = pos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); });
+  cv.addEventListener('pointermove', e => { if (!pad.dib) return; e.preventDefault(); const p = pos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); pad.mov++; });
+  const fin = () => { pad.dib = false; }; cv.addEventListener('pointerup', fin); cv.addEventListener('pointercancel', fin); cv.addEventListener('pointerleave', fin);
+  pad.firmado = () => pad.mov >= 4; return pad;
+}
+function ocLimpiar(w){ (w === 'c' ? _padC : _padO)?.limpiar(); }
+
+function cambiarDia(d){ const f = new Date((_fecha || hoyLocal()) + 'T12:00:00'); f.setDate(f.getDate() + d); _fecha = f.toLocaleDateString('en-CA'); renderOrdenes(); }
+function irHoy(){ _fecha = hoyLocal(); renderOrdenes(); }
+
+async function renderOrdenes(){
+  if (!U) return; if (!_fecha) _fecha = hoyLocal();
+  const f = _fecha, box = $('mo-lista');
+  { const t = new Date(f + 'T12:00:00').toLocaleDateString('es-MX', { weekday:'long', day:'numeric', month:'long' }); $('mo-fecha').textContent = t.charAt(0).toUpperCase() + t.slice(1); }
+  $('mo-hoy').style.visibility = f === hoyLocal() ? 'hidden' : 'visible';
+  if (!U.colaboradorId){ box.innerHTML = '<div class="card"><div class="sec">Tu cuenta todavía no está ligada a tu información de Personal.</div><button class="btn p" style="margin-top:10px" onclick="exigirVinculo().then(renderOrdenes)">Seleccionar mi información</button></div>'; return; }
+  let sinSenal = false, ords = [];
+  try {
+    if (!navigator.onLine || _sinSesion) throw new Error('offline');
+    const { data, error } = await sb.from('ordenes_servicio').select('*').eq('operador_id', U.colaboradorId).eq('fecha', f).order('hora', { ascending:true });
+    if (error) throw error;
+    ords = data || []; const c = lsGet(kOrd(), {}); c[f] = ords; Object.keys(c).sort().slice(0, -4).forEach(k => delete c[k]); lsSet(kOrd(), c);
+  } catch(e){ ords = (lsGet(kOrd(), {})[f]) || []; sinSenal = true; }
+  _ords = ords;
+  const cola = lsGet(kCola(), []), enCola = {}; cola.forEach(i => { enCola[i.orden] = i; });
+  $('mo-estado').innerHTML = (sinSenal ? '<div class="card" style="border-color:var(--amber)"><b>Sin señal.</b> Mostrando las órdenes descargadas. Puedes cerrar y firmar; se enviarán solas al volver la conexión.</div>' : '')
+    + (cola.length ? `<div class="card">${cola.length} orden${cola.length > 1 ? 'es' : ''} pendiente${cola.length > 1 ? 's' : ''} de enviar.${navigator.onLine ? ' <a href="#" onclick="sincronizarCola(true);return false"><b>Enviar ahora</b></a>' : ''}</div>` : '');
+  if (!ords.length){ box.innerHTML = '<div class="card"><div class="sec">No tienes órdenes programadas para este día.</div></div>'; return; }
+  box.innerHTML = ords.map((o, i) => {
+    const q = enCola[o.id], e = EST[o.estado] || [o.estado, ''], abierta = ['programada','en_sitio'].includes(o.estado) && !q;
+    const mapa = o.direccion ? ` <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(o.direccion)}" target="_blank" rel="noopener"><b>Cómo llegar</b></a>` : '';
+    return `<div class="card">
+      <div class="row b"><b>${esc(o.cliente_nombre || '')}</b>${q ? (q.error ? '<span class="tag r">Error al enviar</span>' : '<span class="tag a">Pendiente de enviar</span>') : `<span class="tag ${e[1]}">${e[0]}</span>`}</div>
+      <div class="mut">${esc(o.folio || '')}${o.hora ? ' · ' + esc(o.hora) : ''}</div>
+      <div class="sec" style="margin-top:6px">${esc(o.direccion || 'Sin dirección')}${mapa}</div>
+      ${o.contacto ? `<div class="mut">Contacto: ${esc(o.contacto)}</div>` : ''}
+      <div class="mut" style="margin-top:3px">${(o.tipos || []).length ? esc(o.tipos.join(', ')) : '<span style="color:var(--amber)">Falta tipo de residuo</span>'}${o.volumen ? ' · ' + esc(o.volumen) : ''}</div>
+      ${o.comentarios ? `<div class="sec" style="margin-top:3px">${esc(o.comentarios)}</div>` : ''}
+      ${q?.error ? `<div class="err show">${esc(q.error)} <a href="#" onclick="reintentarCola();return false"><b>Reintentar</b></a></div>` : ''}
+      ${(!q && o.estado === 'completada') ? `<div class="row" style="margin-top:12px"><button class="btn sm" onclick="verComprobante(${i})">Comprobante</button></div>` : ''}
+      ${abierta ? `<div class="row" style="margin-top:12px;flex-wrap:wrap">${o.estado === 'programada' ? `<button class="btn sm" onclick="llegue(${i})">Llegué</button>` : ''}<button class="btn p sm" onclick="abrirCierre(${i})">Cerrar y firmar</button><button class="btn sm" onclick="abrirNoReal(${i})">No realizada</button></div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+async function llegue(i){
+  const o = _ords[i]; if (!o) return;
+  try {
+    const c = await obtenerUbicacion();
+    const { error } = await sb.rpc('iniciar_orden', { p_orden:o.id, p_lat:c.latitude, p_lng:c.longitude }); if (error) throw error;
+    toast('Llegada registrada', 'success'); renderOrdenes();
+  } catch(e){ toast(esErrorRed(e) ? 'Sin señal: no se registró la llegada. Puedes cerrar la orden directamente al terminar.' : (e.message || 'No se pudo registrar'), 'error'); }
+}
+function abrirNoReal(i){ const o = _ords[i]; if (!o) return; _noreal = o; $('nr-res').textContent = `${o.cliente_nombre || ''} · ${o.folio || ''}`; $('nr-mot').value = ''; hide('nr-err'); abrir('m-noreal'); }
+async function confirmarNoReal(){
+  const m = $('nr-mot').value.trim(); if (!m) return say('nr-err', 'Indica el motivo');
+  const { error } = await sb.rpc('marcar_no_realizada', { p_orden:_noreal.id, p_motivo:m });
+  if (error) return say('nr-err', esErrorRed(error) ? 'Necesitas señal para marcar una orden como no realizada.' : error.message);
+  cerrar('m-noreal'); toast('Orden marcada como no realizada', 'success'); renderOrdenes();
+}
+
+function abrirCierre(i){
+  const o = _ords[i]; if (!o) return; _cierre = o;
+  $('oc-titulo').textContent = 'Cerrar orden ' + (o.folio || ''); $('oc-resumen').innerHTML = `<b>${esc(o.cliente_nombre || '')}</b><br>${esc(o.direccion || '')}`;
+  $('oc-tipos').innerHTML = TIPOS.map(t => `<label style="display:flex;gap:9px;align-items:center"><input type="checkbox" style="width:20px;height:20px" value="${esc(t.k)}" ${(o.tipos || []).includes(t.k) ? 'checked' : ''}> ${t.t}</label>`).join('');
+  $('oc-vol').value = o.volumen || ''; $('oc-com').value = o.comentarios || ''; $('oc-nom').value = ''; hide('oc-err');
+  abrir('m-cierre'); _padC = crearPad('oc-pc'); _padO = crearPad('oc-po');
+}
+function cerrarCierre(){ cerrar('m-cierre'); _cierre = null; }
+async function confirmarCierre(){
+  const o = _cierre; if (!o) return; const btn = $('oc-ok');
+  const tipos = [...document.querySelectorAll('#oc-tipos input:checked')].map(x => x.value), nombre = $('oc-nom').value.trim();
+  if (!tipos.length) return say('oc-err', 'Selecciona el tipo de residuo antes de cerrar la orden');
+  if (!nombre) return say('oc-err', 'Escribe el nombre de quien recibe');
+  if (!_padC.firmado()) return say('oc-err', 'Falta la firma de quien recibe');
+  if (!_padO.firmado()) return say('oc-err', 'Falta la firma del operador');
+  btn.disabled = true; hide('oc-err');
+  try {
+    let c; try { c = await obtenerUbicacion(); } catch(e){ return say('oc-err', 'Activa la ubicación de tu dispositivo para cerrar la orden. ' + (e.message || '')); }
+    const it = { orden:o.id, folio:o.folio, tipos, nombre, volumen:$('oc-vol').value.trim() || null, comentarios:$('oc-com').value.trim() || null,
+      lat:c.latitude, lng:c.longitude, firmaC:_padC.cv.toDataURL('image/png'), firmaO:_padO.cv.toDataURL('image/png'), dispositivo:new Date().toISOString(), info:infoDe(o) };
+    let pdf = null; try { pdf = await generarComprobante(it); } catch(e){}
+    if (navigator.onLine && !_sinSesion){
+      try { await enviarCierre(it, pdf); cerrarCierre(); renderOrdenes(); if (pdf) mostrarListo(pdf, it.folio, 'enviada'); else toast('Orden cerrada y firmada', 'success'); return; }
+      catch(e){ if (!esErrorRed(e)) return say('oc-err', e.message || 'No se pudo cerrar la orden'); }
+    }
+    const cola = lsGet(kCola(), []).filter(x => x.orden !== it.orden); cola.push(it);
+    if (!lsSet(kCola(), cola)) return say('oc-err', 'No hay espacio en el teléfono para guardar la orden sin señal. Libera espacio o busca conexión.');
+    cerrarCierre(); renderOrdenes(); if (pdf) mostrarListo(pdf, it.folio, 'cola'); else toast('Sin señal: la orden quedó guardada y se enviará sola', 'success');
+  } finally { btn.disabled = false; }
+}
+function persistirItem(it){ const c = lsGet(kCola(), []), j = c.findIndex(x => x.orden === it.orden); if (j >= 0){ c[j] = it; lsSet(kCola(), c); } }
+async function enviarCierre(it, pdf){
+  const sube = async (d, n) => { const p = `ordenes/${it.orden}/${n}-${Date.now()}.png`; const { error } = await sb.storage.from('firmas').upload(p, dataUrlToBlob(d), { contentType:'image/png' }); if (error) throw error; return p; };
+  if (!it.pathC){ it.pathC = await sube(it.firmaC, 'cliente'); persistirItem(it); }
+  if (!it.pathO){ it.pathO = await sube(it.firmaO, 'operador'); persistirItem(it); }
+  const { error } = await sb.rpc('cerrar_orden', { p_orden:it.orden, p_firma_cliente_path:it.pathC, p_firma_cliente_nombre:it.nombre, p_firma_operador_path:it.pathO,
+    p_tipos:it.tipos, p_volumen:it.volumen, p_lat:it.lat, p_lng:it.lng, p_cerrada_dispositivo:it.dispositivo, p_comentarios:it.comentarios });
+  // Si la respuesta se perdió pero el servidor sí la cerró, el reintento no debe quedar como error.
+  if (error && !/ya esta cerrada/i.test(error.message || '')) throw error;
+  // Comprobante en PDF: se guarda con la orden (no bloquea el cierre si falla; se puede regenerar después).
+  try {
+    const blob = pdf || await generarComprobante(it), ruta = `ordenes/${it.orden}/comprobante-${Date.now()}.pdf`;
+    const { error: e1 } = await sb.storage.from('firmas').upload(ruta, blob, { contentType:'application/pdf' });
+    if (!e1) await sb.rpc('registrar_comprobante', { p_orden:it.orden, p_path:ruta });
+  } catch(e){}
+}
+async function sincronizarCola(manual){
+  if (_sync || !U || _sinSesion) return;
+  if (!navigator.onLine){ if (manual) toast('Sin señal. Se enviarán al recuperar la conexión.'); return; }
+  const cola = lsGet(kCola(), []); if (manual) lsSet(kCola(), cola.map(x => { delete x.error; return x; }));
+  const pend = lsGet(kCola(), []).filter(x => !x.error); if (!pend.length) return;
+  _sync = true; let ok = 0;
+  try {
+    for (const it of pend){
+      try { await enviarCierre(it); lsSet(kCola(), lsGet(kCola(), []).filter(x => x.orden !== it.orden)); ok++; }
+      catch(e){ if (esErrorRed(e)) break; it.error = e.message || 'Error al enviar'; persistirItem(it); }
+    }
+  } finally { _sync = false; }
+  if (ok) toast(`${ok} orden${ok > 1 ? 'es' : ''} enviada${ok > 1 ? 's' : ''}`, 'success');
+  if ($('t-ordenes').style.display !== 'none' && !document.querySelector('.ov.on')) renderOrdenes();
+}
+function reintentarCola(){ sincronizarCola(true); }
+setInterval(() => { if (U && !_sinSesion && navigator.onLine) sincronizarCola(); }, 60000);
+
+
+/* ═══ COMPROBANTE EN PDF ═══ */
+const TIPO_LBL = { 'RESIDUOS SOLIDOS URBANOS':'Residuos sólidos urbanos (RSU)', 'RESIDUOS DE MANEJO ESPECIAL':'Residuos de manejo especial (RME)' };
+const infoDe = o => ({ fecha:o.fecha, cliente:o.cliente_nombre, razon:o.cliente_razon, direccion:o.direccion, contacto:o.contacto, ruta:o.ruta_nombre, unidad:o.unidad_bak, operador:o.operador_nombre });
+function cargarImg(src){ return new Promise((res, rej) => { const im = new Image(); im.onload = () => { const c = document.createElement('canvas'); c.width = im.naturalWidth; c.height = im.naturalHeight; c.getContext('2d').drawImage(im, 0, 0); res(c.toDataURL('image/png')); }; im.onerror = rej; im.src = src; }); }
+function blobToDataUrl(b){ return new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = rej; r.readAsDataURL(b); }); }
+
+async function generarComprobante(d){
+  const { jsPDF } = window.jspdf, doc = new jsPDF({ unit:'mm', format:'a4', compress:true }), W = 210, M = 16, i = d.info || {};
+  const fmtDT = v => v ? new Date(v).toLocaleString('es-MX', { timeZone:TZ, dateStyle:'long', timeStyle:'short' }) : '—';
+  // Encabezado
+  doc.setFillColor(31, 90, 52); doc.rect(0, 0, W, 30, 'F');
+  try { doc.addImage(await cargarImg('icon-192.png'), 'PNG', M, 6, 18, 18); } catch(e){}
+  doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'bold'); doc.setFontSize(16); doc.text('COMPROBANTE DE SERVICIO', M + 24, 15);
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(9.5); doc.text('BioAmbientalistik S.A. de C.V. · BIO-GENOS', M + 24, 21);
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(12); doc.text('Folio ' + (d.folio || ''), W - M, 15, { align:'right' });
+  doc.setTextColor(26, 33, 26);
+  let y = 42;
+  const campo = (k, v) => {
+    const lineas = doc.splitTextToSize(String(v || '—'), W - M * 2 - 48);
+    if (y + lineas.length * 5 > 270){ doc.addPage(); y = 20; }
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.setTextColor(90, 105, 90); doc.text(k.toUpperCase(), M, y);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(10.5); doc.setTextColor(26, 33, 26); doc.text(lineas, M + 48, y);
+    y += lineas.length * 5 + 3;
+  };
+  campo('Cliente', i.cliente); if (i.razon && i.razon !== i.cliente) campo('Razón social', i.razon);
+  campo('Dirección', i.direccion); if (i.contacto) campo('Contacto', i.contacto);
+  campo('Ruta', i.ruta); campo('Unidad', i.unidad); campo('Operador', i.operador);
+  campo('Fecha y hora', fmtDT(d.dispositivo));
+  campo('Tipo de residuo', (d.tipos || []).map(t => TIPO_LBL[t] || t).join('; '));
+  campo('Volumen', d.volumen); if (d.comentarios) campo('Comentarios', d.comentarios);
+  if (d.lat != null && d.lng != null){
+    const txt = `${Number(d.lat).toFixed(6)}, ${Number(d.lng).toFixed(6)}`;
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.setTextColor(90, 105, 90); doc.text('UBICACIÓN', M, y);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(10.5); doc.setTextColor(26, 33, 26); doc.text(txt, M + 48, y);
+    const ancho = doc.getTextWidth(txt); doc.setFontSize(8.5); doc.setTextColor(47, 156, 87); doc.textWithLink('Ver en mapa', M + 48 + ancho + 4, y, { url:`https://www.google.com/maps?q=${d.lat},${d.lng}` });
+    y += 8;
+  }
+  // Firmas
+  if (y > 200){ doc.addPage(); y = 20; }
+  y += 4; doc.setDrawColor(200, 208, 200); doc.line(M, y, W - M, y); y += 8;
+  const cajaW = 82, cajaH = 38, xs = [M, W - M - cajaW];
+  const caja = (x, img, tit, nom) => {
+    doc.setDrawColor(160, 172, 160); doc.rect(x, y, cajaW, cajaH);
+    if (img) { try { doc.addImage(img, 'PNG', x + 1, y + 1, cajaW - 2, cajaH - 2); } catch(e){} }
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.setTextColor(26, 33, 26); doc.text(tit, x, y + cajaH + 5);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(9.5); doc.text(doc.splitTextToSize(nom || '—', cajaW), x, y + cajaH + 10);
+  };
+  caja(xs[0], d.firmaC, 'Firma de quien recibe', d.nombre); caja(xs[1], d.firmaO, 'Firma del operador', i.operador);
+  y += cajaH + 22;
+  // Pie
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5); doc.setTextColor(110, 122, 110);
+  const pie = doc.splitTextToSize(`Documento generado digitalmente por BIO-GENOS el ${fmtDT(new Date().toISOString())}. La firma, la ubicación y la hora fueron registradas desde el dispositivo del operador al cerrar el servicio. Referencia interna: ${d.orden || ''}.`, W - M * 2);
+  doc.text(pie, M, Math.min(y, 282));
+  return doc.output('blob');
+}
+
+let _pdfAct = null;
+function mostrarListo(blob, folio, modo){
+  _pdfAct = { blob, nombre:'Comprobante-' + String(folio || 'orden').replace(/[^\w.-]+/g, '_') + '.pdf' };
+  $('li-titulo').textContent = modo === 'ver' ? 'Comprobante ' + (folio || '') : 'Orden cerrada';
+  $('li-texto').textContent = modo === 'enviada' ? 'La orden quedó cerrada y firmada. Comparte el comprobante con el cliente.'
+    : modo === 'cola' ? 'Sin señal: la orden quedó guardada y se enviará sola. Ya puedes compartir el comprobante con el cliente.'
+    : 'Comparte o descarga el comprobante de esta orden.';
+  abrir('m-listo');
+}
+function descargarPdf(){
+  if (!_pdfAct) return; const u = URL.createObjectURL(_pdfAct.blob), a = document.createElement('a');
+  a.href = u; a.download = _pdfAct.nombre; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 30000);
+}
+async function compartirPdf(){
+  if (!_pdfAct) return; const f = new File([_pdfAct.blob], _pdfAct.nombre, { type:'application/pdf' });
+  if (navigator.canShare && navigator.canShare({ files:[f] })){
+    try { await navigator.share({ files:[f], title:'Comprobante de servicio', text:'Comprobante de servicio · BioAmbientalistik' }); return; }
+    catch(e){ if (e && e.name === 'AbortError') return; }
+  }
+  descargarPdf(); toast('Se descargó el PDF. Envíalo desde tu WhatsApp o correo.');
+}
+async function verComprobante(i){
+  const o = _ords[i]; if (!o) return;
+  if (!navigator.onLine || _sinSesion) return toast('Necesitas señal para obtener el comprobante.', 'error');
+  try {
+    let blob;
+    if (o.comprobante_path){ const { data, error } = await sb.storage.from('firmas').download(o.comprobante_path); if (error) throw error; blob = data; }
+    else {
+      const img = async p => { if (!p) return null; const { data, error } = await sb.storage.from('firmas').download(p); if (error) throw error; return blobToDataUrl(data); };
+      blob = await generarComprobante({ orden:o.id, folio:o.folio, tipos:o.tipos || [], nombre:o.firma_cliente_nombre, volumen:o.volumen, comentarios:o.comentarios, lat:o.lat, lng:o.lng,
+        dispositivo:o.cerrada_dispositivo_at || o.hora_fin || o.completada_at, firmaC:await img(o.firma_cliente_path), firmaO:await img(o.firma_operador_path), info:infoDe(o) });
+    }
+    mostrarListo(blob, o.folio, 'ver');
+  } catch(e){ toast(esErrorRed(e) ? 'Sin señal para obtener el comprobante.' : (e.message || 'No se pudo obtener el comprobante'), 'error'); }
+}
+
+/* ═══ MI PERFIL ═══ */
+let _arch = [];
+async function verArchivo(i){
+  const a = _arch[i]; if (!a?.path) return toast('No hay archivo cargado', 'error');
+  try { const { data, error } = await sb.storage.from(a.bucket).createSignedUrl(a.path, 60); if (error) throw error; if (!window.open(data.signedUrl, '_blank', 'noopener')) toast('El navegador bloqueó la ventana', 'error'); }
+  catch(e){ toast(e.message, 'error'); }
+}
+async function renderPerfil(){
+  const c = $('mp'); if (!U) return;
+  if (!U.colaboradorId){ c.innerHTML = '<div class="card"><div class="sec">Tu cuenta todavía no está ligada a tu información de Personal.</div></div>'; return; }
+  if (!navigator.onLine || _sinSesion){ c.innerHTML = '<div class="card"><div class="sec">Necesitas conexión para ver tu perfil.</div></div>'; return; }
+  c.innerHTML = '<div class="card mut">Cargando…</div>';
+  const [{ data:p, error }, { data:asis }] = await Promise.all([ sb.rpc('mi_perfil'), sb.from('asistencias').select('*').eq('colaborador_id', U.colaboradorId).order('fecha', { ascending:false }).limit(60) ]);
+  if (error || !p){ c.innerHTML = `<div class="card sec">${esc(error?.message || 'No se pudo cargar tu información.')}</div>`; return; }
+  _arch = [];
+  const V = v => (v === null || v === undefined || v === '') ? '—' : esc(String(v)), kv = (k, v) => `<div><small>${k}</small><b>${v}</b></div>`;
+  const btn = (b, path) => { if (!path) return '<span class="mut">Sin archivo</span>'; _arch.push({ bucket:b, path }); return `<button class="btn sm" onclick="verArchivo(${_arch.length - 1})">Ver PDF</button>`; };
+  const fila = (a, b) => `<div class="row b" style="padding:8px 0;border-bottom:1px solid var(--border)"><div>${a}</div>${b}</div>`;
+  const k = p.colaborador || {};
+  const contratos = (p.contratos || []).length ? p.contratos.map(ct => fila(`<b>Contrato</b> ${ct.vigente ? '<span class="tag g">Vigente</span>' : ''}<div class="mut">Firma: ${fmtF(ct.fecha_firma)} · Término: ${ct.fecha_termino ? fmtF(ct.fecha_termino) : 'indefinido'}</div>`, btn('personal', ct.storage_path))).join('') : '<div class="mut">Aún no hay contratos cargados.</div>';
+  const b = p.banco, banco = b ? `<div class="kv">${kv('Tipo de cuenta', V(b.tipo))}${kv('Número', b.ultimos4 ? '•••• ' + esc(b.ultimos4) : '—')}</div><div class="mut">Solo se muestran los últimos 4 dígitos.</div>` : '<div class="mut">Aún no hay cuenta bancaria registrada.</div>';
+  const actas = (p.actas || []).length ? p.actas.map(a => fila(`<b>${V(a.asunto || a.tipo)}</b><div class="mut">${esc(a.tipo || '')} · ${fmtF(a.fecha)}</div>${a.descripcion ? `<div class="sec">${esc(a.descripcion)}</div>` : ''}`, btn('personal', a.storage_path))).join('') : '<div class="mut">No tienes actas registradas.</div>';
+  const t = p.toxicologico, tox = t ? fila(`<b>Examen toxicológico</b><div class="mut">${fmtF(t.fecha_examen)}${t.resultado ? ' · ' + esc(t.resultado) : ''}</div>`, btn('toxicologicos', t.storage_path)) : '<div class="mut" style="margin-top:6px">Sin examen registrado.</div>';
+  const rows = asis || [], EA = { puntual:['Puntual','g'], precaucion:['Precaución','a'], retardo:['Retardo','r'] }, TA = { P:'Presente', F:'Falta', FJ:'Falta justificada', V:'Vacaciones', I:'Incapacidad' };
+  const hist = rows.length ? rows.map(r => { const e = r.estado_puntualidad ? EA[r.estado_puntualidad] : null; return `<div class="row b" style="padding:7px 0;border-bottom:1px solid var(--border);font-size:13px"><span style="text-transform:capitalize">${fmtFC(r.fecha)}</span><span class="mut">${esc(TA[r.tipo] || r.tipo || '')} · ${fmtHora(r.hora_entrada)} – ${fmtHora(r.hora_salida)}</span>${e ? `<span class="tag ${e[1]}">${e[0]}</span>` : '<span></span>'}</div>`; }).join('') : '<div class="mut">Aún no hay registros de asistencia.</div>';
+  c.innerHTML = `<div class="card"><h2>Datos</h2><div class="kv">${kv('Nombre', V(k.nombre))}${kv('Puesto', V(k.puesto))}${kv('Estatus', V(k.estatus))}${kv('Ingreso', fmtF(k.ingreso))}${kv('Tipo de contrato', V(k.contrato_tipo))}${kv('Turno', V(k.turno))}${kv('Teléfono', V(k.tel))}${kv('Contacto de emergencia', V(k.emerg))}${kv('Fecha de nacimiento', fmtF(k.fecha_nacimiento))}${kv('CURP', V(k.curp))}${kv('RFC', V(k.rfc))}</div></div>
+    <div class="card"><h2>Contratos</h2>${contratos}</div><div class="card"><h2>Cuenta bancaria</h2>${banco}</div><div class="card"><h2>Actas y exámenes</h2>${actas}${tox}</div><div class="card"><h2>Historial de asistencia</h2>${hist}</div>`;
+}
+
+/* ── arranque ── */
+arrancar();
+</script>
+</body>
+</html>
