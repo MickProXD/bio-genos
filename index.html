@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
-<title>BIO-GENOS · Órdenes de servicio</title>
+<title>BIO-GENOS · Manifiestos de recolección</title>
 <style>
 :root{--bg:#f4f6f4;--card:#fff;--text:#1b211b;--text2:#4d594d;--text3:#7e8c7e;--border:#dfe5df;--green:#2f9c57;--green-d:#1f5a34;--amber:#b7791f;--red:#c53030;--r:10px;--on:#fff}
 @media (prefers-color-scheme:dark){:root{--bg:#0f1210;--card:#171c17;--text:#dde8dd;--text2:#9fb59f;--text3:#6a806a;--border:#2a332a;--green:#4ec87a;--green-d:#1f5a34;--amber:#e0b044;--red:#e05252;--on:#07140b}}
@@ -48,13 +48,27 @@ canvas.pad{width:100%;height:150px;background:#fff;border:1px dashed #9aa89a;bor
 .lg{display:flex;flex-direction:column;align-items:center;gap:6px;margin:34px 0 20px;text-align:center}
 .lg img{width:84px;height:84px;border-radius:18px;background:#fff}
 a{color:var(--green)}
+.gwrap{max-width:980px;margin:0 auto;padding:0 16px 48px}
+.gtabs{display:flex;gap:6px;overflow-x:auto;position:sticky;top:calc(50px + env(safe-area-inset-top));z-index:4;background:var(--bg);padding:10px 0;margin-bottom:6px;scrollbar-width:none}
+.gtabs::-webkit-scrollbar{display:none}
+.gtabs button{flex:0 0 auto;border:1px solid var(--border);background:var(--card);color:var(--text2);font:inherit;font-weight:700;font-size:13px;padding:8px 14px;border-radius:20px;cursor:pointer}
+.gtabs button.on{background:var(--green);border-color:var(--green);color:var(--on)}
+.g4{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px}
+.bar{height:7px;border-radius:7px;background:var(--border);overflow:hidden;margin-top:8px}.bar i{display:block;height:100%;background:var(--green)}
+.orow{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:9px 0;border-top:1px solid var(--border)}
+details>summary::-webkit-details-marker{display:none}
+.chips{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+.chip{border:1px solid var(--border);background:var(--bg);color:var(--text3);font:inherit;font-weight:700;font-size:12px;width:30px;height:30px;border-radius:8px;cursor:pointer;padding:0}
+.chip.on{background:var(--green);border-color:var(--green);color:var(--on)}
+.sp{flex:1}
+.rol{font-size:11px;font-weight:700;background:rgba(255,255,255,.18);border-radius:20px;padding:2px 9px;color:#fff}
 </style>
 </head>
 <body>
 
 <!-- ACCESO -->
 <div id="v-login" class="view"><div class="wrap">
-  <div class="lg"><img src="icon-192.png" alt=""><h1>BIO-GENOS</h1><div class="sec">Órdenes de servicio digitales · BioAmbientalistik</div></div>
+  <div class="lg"><img src="icon-192.png" alt=""><h1>BIO-GENOS</h1><div class="sec">Manifiestos de recolección de residuos · BioAmbientalistik</div></div>
   <div class="card">
     <label class="l" style="margin-top:0">Correo</label>
     <input id="lg-correo" type="email" autocomplete="username" inputmode="email">
@@ -62,25 +76,10 @@ a{color:var(--green)}
     <input id="lg-pass" type="password" autocomplete="current-password" onkeydown="if(event.key==='Enter')login()">
     <div class="err" id="lg-err">—</div>
     <button class="btn p w" id="lg-btn" style="margin-top:14px" onclick="login()">Entrar</button>
-    <div style="text-align:center;margin-top:14px" class="sec">¿Aún no tienes cuenta? <a href="#" onclick="show('v-solicitud');return false">Solicítala</a></div>
+    <div style="text-align:center;margin-top:14px" class="sec">¿No tienes cuenta? Pídela a tu gerente.</div>
   </div>
   <div id="inst-box" style="display:none;text-align:center"><button class="btn sm" onclick="instalarApp()">Instalar la app en mi teléfono</button></div>
   <div class="mut" style="text-align:center;margin-top:10px" id="inst-ios"></div>
-</div></div>
-
-<!-- SOLICITUD DE CUENTA -->
-<div id="v-solicitud" class="view"><div class="wrap">
-  <div class="lg"><img src="icon-192.png" alt=""><h1>Solicitar cuenta</h1><div class="sec">Dirección revisará tu solicitud y te avisará.</div></div>
-  <div class="card">
-    <label class="l" style="margin-top:0">Nombre completo</label><input id="so-nombre" autocomplete="name">
-    <label class="l">Correo</label><input id="so-correo" type="email" inputmode="email" autocomplete="email">
-    <label class="l">Usuario (minúsculas, números, punto o guion)</label><input id="so-usuario" autocapitalize="none" autocomplete="off">
-    <label class="l">Puesto y funciones</label><textarea id="so-func" rows="2" placeholder="Ej. Operador de recolección, ruta HL"></textarea>
-    <div class="err" id="so-err">—</div>
-    <div class="err" id="so-ok" style="color:var(--green)">Solicitud enviada. Cuando Dirección la apruebe recibirás tus datos de acceso.</div>
-    <button class="btn p w" id="so-btn" style="margin-top:14px" onclick="enviarSolicitud()">Enviar solicitud</button>
-    <button class="btn w" style="margin-top:8px" onclick="show('v-login')">Volver</button>
-  </div>
 </div></div>
 
 <!-- VERIFICACIÓN EN DOS PASOS -->
@@ -96,23 +95,25 @@ a{color:var(--green)}
 
 <!-- APP -->
 <div id="v-app" class="view">
-  <div class="top"><img src="icon-192.png" alt=""><b>BIO-GENOS</b><span class="sp"></span><span id="net" class="mut" style="color:#d6ead9"><i class="dot"></i><span>En línea</span></span><button class="btn sm" style="background:transparent;color:#fff;border-color:rgba(255,255,255,.4)" onclick="abrirMenu()">Menú</button></div>
-  <div class="wrap">
+  <div class="top"><img src="icon-192.png" alt=""><b>BIO-GENOS</b><span class="rol" id="top-rol" style="display:none">Gerente</span><span class="sp"></span><span id="net" class="mut" style="color:#d6ead9"><i class="dot"></i><span>En línea</span></span><button class="btn sm" style="background:transparent;color:#fff;border-color:rgba(255,255,255,.4)" onclick="abrirMenu()">Menú</button></div>
+  <div id="c-app"><div class="wrap">
     <div id="t-ordenes">
       <div class="row b" style="margin-bottom:10px"><button class="btn sm" onclick="cambiarDia(-1)">‹</button><div style="text-align:center"><div id="mo-fecha" style="font-weight:700"></div><a href="#" id="mo-hoy" class="mut" onclick="irHoy();return false">Ir a hoy</a></div><button class="btn sm" onclick="cambiarDia(1)">›</button></div>
       <div id="mo-estado"></div><div id="mo-lista"></div>
     </div>
-    <div id="t-perfil" style="display:none"><div id="mp"></div></div>
-  </div>
-  <div class="tabs"><button id="tb-ordenes" class="on" onclick="tab('ordenes')">Órdenes</button><button id="tb-perfil" onclick="tab('perfil')">Mi perfil</button></div>
+  </div></div>
+  <div id="g-app" style="display:none"><div class="gwrap"><div class="gtabs" id="g-tabs"></div><div id="g-body"></div></div></div>
 </div>
+
+<!-- MODAL GENERAL DEL GERENTE -->
+<div class="ov" id="m-g" onclick="if(event.target===this)cerrar('m-g')"><div class="md" id="g-md" style="max-width:680px"></div></div>
 
 <!-- MENÚ -->
 <div class="ov" id="m-menu" onclick="if(event.target===this)cerrar('m-menu')"><div class="md">
   <h2 id="mn-nombre"></h2><div class="mut" id="mn-ver" style="margin-bottom:12px"></div>
   <button class="btn w" style="margin-bottom:8px" onclick="cerrar('m-menu');abrirPass(false)">Cambiar contraseña</button>
   <button class="btn w" id="mn-inst" style="margin-bottom:8px;display:none" onclick="instalarApp()">Instalar la app</button>
-  <button class="btn w" style="margin-bottom:8px" onclick="cerrar('m-menu');sincronizarCola(true)">Enviar órdenes pendientes</button>
+  <button class="btn w" id="mn-cola" style="margin-bottom:8px" onclick="cerrar('m-menu');sincronizarCola(true)">Enviar manifiestos pendientes</button>
   <button class="btn w" onclick="salir()">Cerrar sesión</button>
   <div class="err" id="mn-err">—</div>
 </div></div>
@@ -120,7 +121,7 @@ a{color:var(--green)}
 <!-- UBICACIÓN OBLIGATORIA -->
 <div class="ov" id="m-ubic"><div class="md">
   <h2>Activa tu ubicación</h2>
-  <div class="sec">BIO-GENOS necesita tu ubicación para comprobar dónde se realiza cada servicio. Es obligatoria para continuar. Solo se consulta al llegar y al cerrar una orden; no se te rastrea de forma continua.</div>
+  <div class="sec">BIO-GENOS necesita tu ubicación para comprobar dónde se realiza cada servicio. Es obligatoria para continuar. Solo se consulta al llegar y al cerrar un manifiesto; no se te rastrea de forma continua.</div>
   <div id="ub-ayuda" class="mut" style="display:none;margin-top:10px"></div>
   <div class="err" id="ub-err">—</div>
   <div class="foot"><button class="btn" onclick="salir(true)">Cerrar sesión</button><button class="btn p" id="ub-btn" onclick="pedirUbicacion()">Permitir ubicación</button></div>
@@ -148,7 +149,7 @@ a{color:var(--green)}
 
 <!-- CIERRE DE ORDEN -->
 <div class="ov" id="m-cierre"><div class="md">
-  <h2 id="oc-titulo">Cerrar orden</h2>
+  <h2 id="oc-titulo">Cerrar manifiesto</h2>
   <div id="oc-resumen" class="sec"></div>
   <label class="l">Tipo de residuo *</label><div id="oc-tipos" style="display:flex;flex-direction:column;gap:9px"></div>
   <label class="l">Volumen</label><input id="oc-vol" placeholder="Ej. 3 x 1,100 Lt.">
@@ -156,9 +157,9 @@ a{color:var(--green)}
   <label class="l">Nombre de quien recibe *</label><input id="oc-nom" autocomplete="off">
   <label class="l">Firma de quien recibe * <a href="#" style="float:right" onclick="ocLimpiar('c');return false">Borrar</a></label><canvas id="oc-pc" class="pad" width="600" height="220"></canvas>
   <label class="l">Firma del operador * <a href="#" style="float:right" onclick="ocLimpiar('o');return false">Borrar</a></label><canvas id="oc-po" class="pad" width="600" height="220"></canvas>
-  <div class="mut" style="margin-top:8px">Se registran la ubicación y la hora de tu teléfono. Sin señal, la orden se guarda y se envía sola al recuperar conexión.</div>
+  <div class="mut" style="margin-top:8px">Se registran la ubicación y la hora de tu teléfono. Sin señal, el manifiesto se guarda y se envía solo al recuperar conexión.</div>
   <div class="err" id="oc-err">—</div>
-  <div class="foot"><button class="btn" onclick="cerrarCierre()">Cancelar</button><button class="btn p" id="oc-ok" onclick="confirmarCierre()">Cerrar orden</button></div>
+  <div class="foot"><button class="btn" onclick="cerrarCierre()">Cancelar</button><button class="btn p" id="oc-ok" onclick="confirmarCierre()">Cerrar manifiesto</button></div>
 </div></div>
 
 <!-- NO REALIZADA -->
@@ -184,9 +185,10 @@ a{color:var(--green)}
 
 <script src="supabase.js"></script>
 <script src="jspdf.umd.min.js"></script>
+<script src="gerente.js"></script>
 <script>
 'use strict';
-const APP_VERSION = '1.1.0';
+const APP_VERSION = '2.0.0';
 const SUPABASE_URL = 'https://csjvexyodhoirjimjwrb.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_DUoYx9ZFV6pP_ryZ2g2tSg_1jPXeRZg';   // llave pública: todo el acceso real lo limita RLS
 const TZ = 'America/Mexico_City';
@@ -238,19 +240,6 @@ async function login(){
   if (error) return say('lg-err', esErrorRed(error) ? 'Sin conexión. Necesitas señal para iniciar sesión.' : 'Correo o contraseña incorrectos');
   await arrancar();
 }
-async function enviarSolicitud(){
-  hide('so-err'); hide('so-ok');
-  const nombre = $('so-nombre').value.trim(), correo = $('so-correo').value.trim().toLowerCase(), usuario = $('so-usuario').value.trim().toLowerCase(), funciones = $('so-func').value.trim();
-  if (!nombre) return say('so-err', 'Escribe tu nombre completo');
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) return say('so-err', 'Escribe un correo válido');
-  if (usuario.length < 3 || !/^[a-z0-9._-]+$/.test(usuario)) return say('so-err', 'Usuario: mínimo 3 caracteres, solo minúsculas, números, punto o guion');
-  if (!funciones) return say('so-err', 'Describe brevemente tu puesto y funciones');
-  const b = $('so-btn'); b.disabled = true;
-  const { data, error } = await sb.functions.invoke('solicitar-cuenta', { body:{ nombre, correo, usuario, funciones } });
-  b.disabled = false;
-  if (error || data?.error){ let m = data?.error; if (!m) try { m = (await error.context.json()).error; } catch(e){} return say('so-err', m || error.message); }
-  ['so-nombre','so-correo','so-usuario','so-func'].forEach(i => $(i).value = ''); $('so-ok').classList.add('show');
-}
 async function verificarMfa(){
   hide('mfa-err'); const code = $('mfa-code').value.trim();
   if (!/^\d{6}$/.test(code)) return say('mfa-err', 'Ingresa el código de 6 dígitos');
@@ -281,43 +270,44 @@ async function arrancar(){
   else if (esErrorRed(error)){ const c = lsGet('bg_ultimo', null); if (c && c.id === session.user.id){ U = c; return entrar(); } }
   if (!perfil){ toast('No se encontró tu perfil de acceso', 'error'); await sb.auth.signOut(); return show('v-login'); }
   if (!perfil.activo){ toast('Tu cuenta está desactivada. Contacta a Dirección.', 'error'); await sb.auth.signOut(); return show('v-login'); }
-  if (perfil.role !== 'chofer'){
+  if (!['chofer','supervisor','direccion_ceo'].includes(perfil.role)){
     await sb.auth.signOut(); show('v-login');
-    return say('lg-err', 'Esta app es solo para operativos. Usa Bio-centralis con tu cuenta.');
+    return say('lg-err', 'Esta app es para choferes y gerentes. Usa Bio-centralis con tu cuenta.');
   }
-  U = { id:perfil.id, nombre:perfil.nombre, role:perfil.role, colaboradorId:perfil.colaborador_id, ubicAt:perfil.ubicacion_permiso_at, debePass:!!perfil.debe_cambiar_password, passAt:perfil.password_set_at };
+  U = { id:perfil.id, nombre:perfil.nombre, role:perfil.role, gerente:perfil.role !== 'chofer', colaboradorId:perfil.colaborador_id, ubicAt:perfil.ubicacion_permiso_at, debePass:!!perfil.debe_cambiar_password, passAt:perfil.password_set_at };
   lsSet('bg_ultimo', U);
   await entrar();
 }
 async function entrar(){
+  if (U.gerente && _sinSesion){ toast('El panel de gerente necesita conexión.', 'error'); U = null; _sinSesion = false; return show('v-login'); }
   show('v-app'); $('mn-nombre').textContent = U.nombre; $('mn-ver').textContent = 'BIO-GENOS v' + APP_VERSION;
-  tab('ordenes'); netEstado();
+  $('c-app').style.display = U.gerente ? 'none' : 'block'; $('g-app').style.display = U.gerente ? 'block' : 'none';
+  $('top-rol').style.display = U.gerente ? '' : 'none'; $('mn-cola').style.display = U.gerente ? 'none' : '';
+  if (!U.gerente) tab('ordenes'); netEstado();
   if (_sinSesion) return;
-  await exigirUbicacion();
-  if (!U.colaboradorId) await exigirVinculo();
+  if (U.role !== 'direccion_ceo') await exigirUbicacion();
+  if (!U.gerente && !U.colaboradorId) await exigirVinculo();
   if (U.debePass){
     const h = (Date.now() - new Date(U.passAt).getTime()) / 3600000;
     if (h >= 24) abrirPass(true); else toast(`Tienes una contraseña temporal. Cámbiala en las próximas ${Math.ceil(24 - h)} horas.`);
   }
+  if (U.gerente){ gIniciar(); return; }
   renderOrdenes(); sincronizarCola();
 }
 async function salir(forzar){
   const pend = U ? lsGet(kCola(), []).length : 0;
-  if (pend && !forzar){ $('mn-err').textContent = `Tienes ${pend} orden${pend > 1 ? 'es' : ''} sin enviar. Conéctate y envíalas antes de cerrar sesión.`; $('mn-err').classList.add('show'); return; }
+  if (pend && !forzar){ $('mn-err').textContent = `Tienes ${pend} manifiesto${pend > 1 ? 's' : ''} sin enviar. Conéctate y envíalos antes de cerrar sesión.`; $('mn-err').classList.add('show'); return; }
   try { await sb.auth.signOut(); } catch(e){}
-  ['m-menu','m-ubic','m-vinc','m-pass','m-cierre','m-noreal'].forEach(cerrar);
+  ['m-menu','m-ubic','m-vinc','m-pass','m-cierre','m-noreal','m-g','m-listo'].forEach(cerrar);
+  gDetener(); $('g-body').innerHTML = ''; $('c-app').style.display = 'block'; $('g-app').style.display = 'none';
   U = null; _sinSesion = false; show('v-login'); $('lg-correo').focus();
 }
 function abrirMenu(){ hide('mn-err'); abrir('m-menu'); }
-function tab(t){
-  $('t-ordenes').style.display = t === 'ordenes' ? 'block' : 'none'; $('t-perfil').style.display = t === 'perfil' ? 'block' : 'none';
-  $('tb-ordenes').classList.toggle('on', t === 'ordenes'); $('tb-perfil').classList.toggle('on', t === 'perfil');
-  if (t === 'perfil') renderPerfil(); else if (U) renderOrdenes();
-}
+function tab(){ $('t-ordenes').style.display = 'block'; if (U && !U.gerente) renderOrdenes(); }
 function netEstado(){ const o = navigator.onLine; $('net').innerHTML = `<i class="dot ${o ? '' : 'off'}"></i><span>${o ? 'En línea' : 'Sin señal'}</span>`; }
 window.addEventListener('online', () => { netEstado(); if (U && !_sinSesion) sincronizarCola(); });
 window.addEventListener('offline', netEstado);
-document.addEventListener('visibilitychange', () => { if (!document.hidden && U && !_sinSesion && $('t-ordenes').style.display !== 'none' && !document.querySelector('.ov.on')) renderOrdenes(); });
+document.addEventListener('visibilitychange', () => { if (!document.hidden && U && !U.gerente && !_sinSesion && !document.querySelector('.ov.on')) renderOrdenes(); });
 
 /* ── ubicación obligatoria ── */
 let _ubRes = null, _ubVig = false;
@@ -405,7 +395,7 @@ function cambiarDia(d){ const f = new Date((_fecha || hoyLocal()) + 'T12:00:00')
 function irHoy(){ _fecha = hoyLocal(); renderOrdenes(); }
 
 async function renderOrdenes(){
-  if (!U) return; if (!_fecha) _fecha = hoyLocal();
+  if (!U || U.gerente) return; if (!_fecha) _fecha = hoyLocal();
   const f = _fecha, box = $('mo-lista');
   { const t = new Date(f + 'T12:00:00').toLocaleDateString('es-MX', { weekday:'long', day:'numeric', month:'long' }); $('mo-fecha').textContent = t.charAt(0).toUpperCase() + t.slice(1); }
   $('mo-hoy').style.visibility = f === hoyLocal() ? 'hidden' : 'visible';
@@ -419,9 +409,9 @@ async function renderOrdenes(){
   } catch(e){ ords = (lsGet(kOrd(), {})[f]) || []; sinSenal = true; }
   _ords = ords;
   const cola = lsGet(kCola(), []), enCola = {}; cola.forEach(i => { enCola[i.orden] = i; });
-  $('mo-estado').innerHTML = (sinSenal ? '<div class="card" style="border-color:var(--amber)"><b>Sin señal.</b> Mostrando las órdenes descargadas. Puedes cerrar y firmar; se enviarán solas al volver la conexión.</div>' : '')
-    + (cola.length ? `<div class="card">${cola.length} orden${cola.length > 1 ? 'es' : ''} pendiente${cola.length > 1 ? 's' : ''} de enviar.${navigator.onLine ? ' <a href="#" onclick="sincronizarCola(true);return false"><b>Enviar ahora</b></a>' : ''}</div>` : '');
-  if (!ords.length){ box.innerHTML = '<div class="card"><div class="sec">No tienes órdenes programadas para este día.</div></div>'; return; }
+  $('mo-estado').innerHTML = (sinSenal ? '<div class="card" style="border-color:var(--amber)"><b>Sin señal.</b> Mostrando los manifiestos descargados. Puedes cerrar y firmar; se enviarán solos al volver la conexión.</div>' : '')
+    + (cola.length ? `<div class="card">${cola.length} manifiesto${cola.length > 1 ? 's' : ''} pendiente${cola.length > 1 ? 's' : ''} de enviar.${navigator.onLine ? ' <a href="#" onclick="sincronizarCola(true);return false"><b>Enviar ahora</b></a>' : ''}</div>` : '');
+  if (!ords.length){ box.innerHTML = '<div class="card"><div class="sec">No tienes manifiestos programados para este día.</div></div>'; return; }
   box.innerHTML = ords.map((o, i) => {
     const q = enCola[o.id], e = EST[o.estado] || [o.estado, ''], abierta = ['programada','en_sitio'].includes(o.estado) && !q;
     const mapa = o.direccion ? ` <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(o.direccion)}" target="_blank" rel="noopener"><b>Cómo llegar</b></a>` : '';
@@ -445,19 +435,19 @@ async function llegue(i){
     const c = await obtenerUbicacion();
     const { error } = await sb.rpc('iniciar_orden', { p_orden:o.id, p_lat:c.latitude, p_lng:c.longitude }); if (error) throw error;
     toast('Llegada registrada', 'success'); renderOrdenes();
-  } catch(e){ toast(esErrorRed(e) ? 'Sin señal: no se registró la llegada. Puedes cerrar la orden directamente al terminar.' : (e.message || 'No se pudo registrar'), 'error'); }
+  } catch(e){ toast(esErrorRed(e) ? 'Sin señal: no se registró la llegada. Puedes cerrar el manifiesto directamente al terminar.' : (e.message || 'No se pudo registrar'), 'error'); }
 }
 function abrirNoReal(i){ const o = _ords[i]; if (!o) return; _noreal = o; $('nr-res').textContent = `${o.cliente_nombre || ''} · ${o.folio || ''}`; $('nr-mot').value = ''; hide('nr-err'); abrir('m-noreal'); }
 async function confirmarNoReal(){
   const m = $('nr-mot').value.trim(); if (!m) return say('nr-err', 'Indica el motivo');
   const { error } = await sb.rpc('marcar_no_realizada', { p_orden:_noreal.id, p_motivo:m });
-  if (error) return say('nr-err', esErrorRed(error) ? 'Necesitas señal para marcar una orden como no realizada.' : error.message);
-  cerrar('m-noreal'); toast('Orden marcada como no realizada', 'success'); renderOrdenes();
+  if (error) return say('nr-err', esErrorRed(error) ? 'Necesitas señal para marcar un manifiesto como no realizado.' : error.message);
+  cerrar('m-noreal'); toast('Manifiesto marcado como no realizado', 'success'); renderOrdenes();
 }
 
 function abrirCierre(i){
   const o = _ords[i]; if (!o) return; _cierre = o;
-  $('oc-titulo').textContent = 'Cerrar orden ' + (o.folio || ''); $('oc-resumen').innerHTML = `<b>${esc(o.cliente_nombre || '')}</b><br>${esc(o.direccion || '')}`;
+  $('oc-titulo').textContent = 'Manifiesto ' + (o.folio || ''); $('oc-resumen').innerHTML = `<b>${esc(o.cliente_nombre || '')}</b><br>${esc(o.direccion || '')}`;
   $('oc-tipos').innerHTML = TIPOS.map(t => `<label style="display:flex;gap:9px;align-items:center"><input type="checkbox" style="width:20px;height:20px" value="${esc(t.k)}" ${(o.tipos || []).includes(t.k) ? 'checked' : ''}> ${t.t}</label>`).join('');
   $('oc-vol').value = o.volumen || ''; $('oc-com').value = o.comentarios || ''; $('oc-nom').value = ''; hide('oc-err');
   abrir('m-cierre'); _padC = crearPad('oc-pc'); _padO = crearPad('oc-po');
@@ -466,23 +456,23 @@ function cerrarCierre(){ cerrar('m-cierre'); _cierre = null; }
 async function confirmarCierre(){
   const o = _cierre; if (!o) return; const btn = $('oc-ok');
   const tipos = [...document.querySelectorAll('#oc-tipos input:checked')].map(x => x.value), nombre = $('oc-nom').value.trim();
-  if (!tipos.length) return say('oc-err', 'Selecciona el tipo de residuo antes de cerrar la orden');
+  if (!tipos.length) return say('oc-err', 'Selecciona el tipo de residuo antes de cerrar el manifiesto');
   if (!nombre) return say('oc-err', 'Escribe el nombre de quien recibe');
   if (!_padC.firmado()) return say('oc-err', 'Falta la firma de quien recibe');
   if (!_padO.firmado()) return say('oc-err', 'Falta la firma del operador');
   btn.disabled = true; hide('oc-err');
   try {
-    let c; try { c = await obtenerUbicacion(); } catch(e){ return say('oc-err', 'Activa la ubicación de tu dispositivo para cerrar la orden. ' + (e.message || '')); }
+    let c; try { c = await obtenerUbicacion(); } catch(e){ return say('oc-err', 'Activa la ubicación de tu dispositivo para cerrar el manifiesto. ' + (e.message || '')); }
     const it = { orden:o.id, folio:o.folio, tipos, nombre, volumen:$('oc-vol').value.trim() || null, comentarios:$('oc-com').value.trim() || null,
       lat:c.latitude, lng:c.longitude, firmaC:_padC.cv.toDataURL('image/png'), firmaO:_padO.cv.toDataURL('image/png'), dispositivo:new Date().toISOString(), info:infoDe(o) };
     let pdf = null; try { pdf = await generarComprobante(it); } catch(e){}
     if (navigator.onLine && !_sinSesion){
-      try { await enviarCierre(it, pdf); cerrarCierre(); renderOrdenes(); if (pdf) mostrarListo(pdf, it.folio, 'enviada'); else toast('Orden cerrada y firmada', 'success'); return; }
-      catch(e){ if (!esErrorRed(e)) return say('oc-err', e.message || 'No se pudo cerrar la orden'); }
+      try { await enviarCierre(it, pdf); cerrarCierre(); renderOrdenes(); if (pdf) mostrarListo(pdf, it.folio, 'enviada'); else toast('Manifiesto cerrado y firmado', 'success'); return; }
+      catch(e){ if (!esErrorRed(e)) return say('oc-err', e.message || 'No se pudo cerrar el manifiesto'); }
     }
     const cola = lsGet(kCola(), []).filter(x => x.orden !== it.orden); cola.push(it);
-    if (!lsSet(kCola(), cola)) return say('oc-err', 'No hay espacio en el teléfono para guardar la orden sin señal. Libera espacio o busca conexión.');
-    cerrarCierre(); renderOrdenes(); if (pdf) mostrarListo(pdf, it.folio, 'cola'); else toast('Sin señal: la orden quedó guardada y se enviará sola', 'success');
+    if (!lsSet(kCola(), cola)) return say('oc-err', 'No hay espacio en el teléfono para guardar el manifiesto sin señal. Libera espacio o busca conexión.');
+    cerrarCierre(); renderOrdenes(); if (pdf) mostrarListo(pdf, it.folio, 'cola'); else toast('Sin señal: el manifiesto quedó guardado y se enviará solo', 'success');
   } finally { btn.disabled = false; }
 }
 function persistirItem(it){ const c = lsGet(kCola(), []), j = c.findIndex(x => x.orden === it.orden); if (j >= 0){ c[j] = it; lsSet(kCola(), c); } }
@@ -494,7 +484,7 @@ async function enviarCierre(it, pdf){
     p_tipos:it.tipos, p_volumen:it.volumen, p_lat:it.lat, p_lng:it.lng, p_cerrada_dispositivo:it.dispositivo, p_comentarios:it.comentarios });
   // Si la respuesta se perdió pero el servidor sí la cerró, el reintento no debe quedar como error.
   if (error && !/ya esta cerrada/i.test(error.message || '')) throw error;
-  // Comprobante en PDF: se guarda con la orden (no bloquea el cierre si falla; se puede regenerar después).
+  // Comprobante en PDF: se guarda con el manifiesto (no bloquea el cierre si falla; se puede regenerar después).
   try {
     const blob = pdf || await generarComprobante(it), ruta = `ordenes/${it.orden}/comprobante-${Date.now()}.pdf`;
     const { error: e1 } = await sb.storage.from('firmas').upload(ruta, blob, { contentType:'application/pdf' });
@@ -502,7 +492,7 @@ async function enviarCierre(it, pdf){
   } catch(e){}
 }
 async function sincronizarCola(manual){
-  if (_sync || !U || _sinSesion) return;
+  if (_sync || !U || U.gerente || _sinSesion) return;
   if (!navigator.onLine){ if (manual) toast('Sin señal. Se enviarán al recuperar la conexión.'); return; }
   const cola = lsGet(kCola(), []); if (manual) lsSet(kCola(), cola.map(x => { delete x.error; return x; }));
   const pend = lsGet(kCola(), []).filter(x => !x.error); if (!pend.length) return;
@@ -513,8 +503,8 @@ async function sincronizarCola(manual){
       catch(e){ if (esErrorRed(e)) break; it.error = e.message || 'Error al enviar'; persistirItem(it); }
     }
   } finally { _sync = false; }
-  if (ok) toast(`${ok} orden${ok > 1 ? 'es' : ''} enviada${ok > 1 ? 's' : ''}`, 'success');
-  if ($('t-ordenes').style.display !== 'none' && !document.querySelector('.ov.on')) renderOrdenes();
+  if (ok) toast(`${ok} manifiesto${ok > 1 ? 's' : ''} enviado${ok > 1 ? 's' : ''}`, 'success');
+  if (!document.querySelector('.ov.on')) renderOrdenes();
 }
 function reintentarCola(){ sincronizarCola(true); }
 setInterval(() => { if (U && !_sinSesion && navigator.onLine) sincronizarCola(); }, 60000);
@@ -532,7 +522,7 @@ async function generarComprobante(d){
   // Encabezado
   doc.setFillColor(31, 90, 52); doc.rect(0, 0, W, 30, 'F');
   try { doc.addImage(await cargarImg('icon-192.png'), 'PNG', M, 6, 18, 18); } catch(e){}
-  doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'bold'); doc.setFontSize(16); doc.text('COMPROBANTE DE SERVICIO', M + 24, 15);
+  doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'bold'); doc.setFontSize(13); doc.text('MANIFIESTO DE RECOLECCIÓN DE RESIDUOS', M + 24, 15);
   doc.setFont('helvetica', 'normal'); doc.setFontSize(9.5); doc.text('BioAmbientalistik S.A. de C.V. · BIO-GENOS', M + 24, 21);
   doc.setFont('helvetica', 'bold'); doc.setFontSize(12); doc.text('Folio ' + (d.folio || ''), W - M, 15, { align:'right' });
   doc.setTextColor(26, 33, 26);
@@ -579,10 +569,10 @@ async function generarComprobante(d){
 let _pdfAct = null;
 function mostrarListo(blob, folio, modo){
   _pdfAct = { blob, nombre:'Comprobante-' + String(folio || 'orden').replace(/[^\w.-]+/g, '_') + '.pdf' };
-  $('li-titulo').textContent = modo === 'ver' ? 'Comprobante ' + (folio || '') : 'Orden cerrada';
-  $('li-texto').textContent = modo === 'enviada' ? 'La orden quedó cerrada y firmada. Comparte el comprobante con el cliente.'
-    : modo === 'cola' ? 'Sin señal: la orden quedó guardada y se enviará sola. Ya puedes compartir el comprobante con el cliente.'
-    : 'Comparte o descarga el comprobante de esta orden.';
+  $('li-titulo').textContent = modo === 'ver' ? 'Comprobante ' + (folio || '') : 'Manifiesto cerrado';
+  $('li-texto').textContent = modo === 'enviada' ? 'El manifiesto quedó cerrado y firmado. Comparte el comprobante con el cliente.'
+    : modo === 'cola' ? 'Sin señal: el manifiesto quedó guardado y se enviará solo. Ya puedes compartir el comprobante con el cliente.'
+    : 'Comparte o descarga el comprobante de este manifiesto.';
   abrir('m-listo');
 }
 function descargarPdf(){
@@ -592,13 +582,14 @@ function descargarPdf(){
 async function compartirPdf(){
   if (!_pdfAct) return; const f = new File([_pdfAct.blob], _pdfAct.nombre, { type:'application/pdf' });
   if (navigator.canShare && navigator.canShare({ files:[f] })){
-    try { await navigator.share({ files:[f], title:'Comprobante de servicio', text:'Comprobante de servicio · BioAmbientalistik' }); return; }
+    try { await navigator.share({ files:[f], title:'Manifiesto de recolección de residuos', text:'Comprobante de servicio · BioAmbientalistik' }); return; }
     catch(e){ if (e && e.name === 'AbortError') return; }
   }
   descargarPdf(); toast('Se descargó el PDF. Envíalo desde tu WhatsApp o correo.');
 }
-async function verComprobante(i){
-  const o = _ords[i]; if (!o) return;
+function verComprobante(i){ return verComprobanteO(_ords[i]); }
+async function verComprobanteO(o){
+  if (!o) return;
   if (!navigator.onLine || _sinSesion) return toast('Necesitas señal para obtener el comprobante.', 'error');
   try {
     let blob;

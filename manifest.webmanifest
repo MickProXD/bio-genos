@@ -1,7 +1,7 @@
 {
-  "name": "BIO-GENOS · Órdenes de servicio",
+  "name": "BIO-GENOS · Manifiestos de recolección",
   "short_name": "BIO-GENOS",
-  "description": "Órdenes de servicio digitales de BioAmbientalistik",
+  "description": "Manifiestos de recolección de residuos de BioAmbientalistik",
   "lang": "es-MX",
   "start_url": "./",
   "scope": "./",

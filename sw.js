@@ -1,7 +1,7 @@
 /* BIO-GENOS — service worker: deja abrir la app sin señal.
    Solo guarda los archivos propios de la app. Nunca toca las llamadas a Supabase (datos, sesión, firmas). */
-const VERSION = 'bio-genos-v1.1.0';
-const ARCHIVOS = ['./', 'index.html', 'supabase.js', 'jspdf.umd.min.js', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'icon-maskable-512.png'];
+const VERSION = 'bio-genos-v2.0.0';
+const ARCHIVOS = ['./', 'index.html', 'supabase.js', 'jspdf.umd.min.js', 'gerente.js', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'icon-maskable-512.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(VERSION).then(c => c.addAll(ARCHIVOS)).then(() => self.skipWaiting()));
