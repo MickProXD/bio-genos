@@ -97,6 +97,7 @@ details>summary::-webkit-details-marker{display:none}
 <div id="v-app" class="view">
   <div class="top"><img src="icon-192.png" alt=""><b>BIO-GENOS</b><span class="rol" id="top-rol" style="display:none">Gerente</span><span class="sp"></span><span id="net" class="mut" style="color:#d6ead9"><i class="dot"></i><span>En línea</span></span><button class="btn sm" style="background:transparent;color:#fff;border-color:rgba(255,255,255,.4)" onclick="abrirMenu()">Menú</button></div>
   <div id="c-app"><div class="wrap">
+    <div id="mo-unidad"></div>
     <div id="t-ordenes">
       <div class="row b" style="margin-bottom:10px"><button class="btn sm" onclick="cambiarDia(-1)">‹</button><div style="text-align:center"><div id="mo-fecha" style="font-weight:700"></div><a href="#" id="mo-hoy" class="mut" onclick="irHoy();return false">Ir a hoy</a></div><button class="btn sm" onclick="cambiarDia(1)">›</button></div>
       <div id="mo-estado"></div><div id="mo-lista"></div>
@@ -186,9 +187,10 @@ details>summary::-webkit-details-marker{display:none}
 <script src="supabase.js"></script>
 <script src="jspdf.umd.min.js"></script>
 <script src="gerente.js"></script>
+<script src="mantenimiento.js"></script>
 <script>
 'use strict';
-const APP_VERSION = '2.0.0';
+const APP_VERSION = '2.1.0';
 const SUPABASE_URL = 'https://csjvexyodhoirjimjwrb.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_DUoYx9ZFV6pP_ryZ2g2tSg_1jPXeRZg';   // llave pública: todo el acceso real lo limita RLS
 const TZ = 'America/Mexico_City';
@@ -292,14 +294,14 @@ async function entrar(){
     if (h >= 24) abrirPass(true); else toast(`Tienes una contraseña temporal. Cámbiala en las próximas ${Math.ceil(24 - h)} horas.`);
   }
   if (U.gerente){ gIniciar(); return; }
-  renderOrdenes(); sincronizarCola();
+  renderOrdenes(); sincronizarCola(); cmIniciar();
 }
 async function salir(forzar){
   const pend = U ? lsGet(kCola(), []).length : 0;
   if (pend && !forzar){ $('mn-err').textContent = `Tienes ${pend} manifiesto${pend > 1 ? 's' : ''} sin enviar. Conéctate y envíalos antes de cerrar sesión.`; $('mn-err').classList.add('show'); return; }
   try { await sb.auth.signOut(); } catch(e){}
   ['m-menu','m-ubic','m-vinc','m-pass','m-cierre','m-noreal','m-g','m-listo'].forEach(cerrar);
-  gDetener(); $('g-body').innerHTML = ''; $('c-app').style.display = 'block'; $('g-app').style.display = 'none';
+  gDetener(); cmDetener(); $('g-body').innerHTML = ''; $('c-app').style.display = 'block'; $('g-app').style.display = 'none';
   U = null; _sinSesion = false; show('v-login'); $('lg-correo').focus();
 }
 function abrirMenu(){ hide('mn-err'); abrir('m-menu'); }
@@ -396,6 +398,7 @@ function irHoy(){ _fecha = hoyLocal(); renderOrdenes(); }
 
 async function renderOrdenes(){
   if (!U || U.gerente) return; if (!_fecha) _fecha = hoyLocal();
+  cmRender();
   const f = _fecha, box = $('mo-lista');
   { const t = new Date(f + 'T12:00:00').toLocaleDateString('es-MX', { weekday:'long', day:'numeric', month:'long' }); $('mo-fecha').textContent = t.charAt(0).toUpperCase() + t.slice(1); }
   $('mo-hoy').style.visibility = f === hoyLocal() ? 'hidden' : 'visible';

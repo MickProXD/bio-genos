@@ -4,7 +4,7 @@
 const G = { tab:'hoy', fecha:null, ords:[], cat:null, par:null, rt:null, live:false, open:{}, _rtT:null };
 const DIAS = ['LUN','MAR','MIE','JUE','VIE','SAB','DOM'], DIA_L = { LUN:'L', MAR:'M', MIE:'X', JUE:'J', VIE:'V', SAB:'S', DOM:'D' };
 const diaDe = f => DIAS[(new Date(f + 'T12:00:00').getDay() + 6) % 7];
-const G_TABS = [['hoy','Hoy'], ['man','Manifiestos'], ['rutas','Rutas'], ['pers','Personal'], ['uni','Unidades'], ['cli','Clientes']];
+const G_TABS = [['hoy','Hoy'], ['man','Manifiestos'], ['mant','Mantenimiento'], ['rutas','Rutas'], ['pers','Personal'], ['uni','Unidades'], ['cli','Clientes']];
 const ESTG = { programada:['Programada','a'], en_sitio:['En sitio','g'], completada:['Completada','g'], no_realizada:['No realizada','r'], anulada:['Anulada',''] };
 const natural = (a, b) => String(a).localeCompare(String(b), 'es', { numeric:true });
 const norm = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase().replace(/\s+/g, ' ').trim();
@@ -37,9 +37,9 @@ async function gCat(){
 async function gParadas(){ G.par = await q(sb.from('ruta_clientes').select('id,ruta_id,dias')); return G.par; }
 
 /* ── estructura ── */
-function gIniciar(){ G.fecha = hoyLocal(); G.tab = 'hoy'; gRealtime(); gIr('hoy'); }
-function gTabs(){ $('g-tabs').innerHTML = G_TABS.map(([k, t]) => `<button class="${G.tab === k ? 'on' : ''}" onclick="gIr('${k}')">${t}</button>`).join(''); }
-function gIr(t){ G.tab = t; gTabs(); window.scrollTo(0, 0); ({ hoy:gHoy, man:gMan, rutas:gRutas, pers:gPers, uni:gUni, cli:gCli })[t](); }
+function gIniciar(){ G.fecha = hoyLocal(); G.tab = 'hoy'; gRealtime(); gIr('hoy'); gMBadge(); }
+function gTabs(){ $('g-tabs').innerHTML = G_TABS.map(([k, t]) => `<button class="${G.tab === k ? 'on' : ''}" onclick="gIr('${k}')">${t}${k === 'mant' && G.nInc ? ` <span class="tag r" style="background:var(--red);color:#fff;border-color:var(--red)">${G.nInc}</span>` : ''}</button>`).join(''); }
+function gIr(t){ G.tab = t; gTabs(); window.scrollTo(0, 0); ({ hoy:gHoy, man:gMan, mant:gMant, rutas:gRutas, pers:gPers, uni:gUni, cli:gCli })[t](); }
 function gFechaBar(){
   const t = new Date(G.fecha + 'T12:00:00').toLocaleDateString('es-MX', { weekday:'long', day:'numeric', month:'long' });
   return `<div class="row b" style="margin-bottom:12px"><button class="btn sm" onclick="gDia(-1)">‹</button><div style="text-align:center"><div style="font-weight:700">${esc(t.charAt(0).toUpperCase() + t.slice(1))}</div><a href="#" class="mut" style="visibility:${G.fecha === hoyLocal() ? 'hidden' : 'visible'}" onclick="G.fecha=hoyLocal();gIr(G.tab);return false">Ir a hoy</a></div><button class="btn sm" onclick="gDia(1)">›</button></div>`;
@@ -55,9 +55,11 @@ function gRealtime(){
     if (pl.eventType === 'UPDATE' && n.estado === 'completada' && n.completada_at && Date.now() - new Date(n.completada_at).getTime() < 30000) toast(`Completado: ${n.cliente_nombre || n.folio} · ${n.operador_nombre || ''}`, 'success');
     if (pl.eventType === 'UPDATE' && n.estado === 'no_realizada') toast(`No realizado: ${n.cliente_nombre || n.folio}`, 'error');
     if (!document.querySelector('.ov.on') && (G.tab === 'hoy' || G.tab === 'man')){ clearTimeout(G._rtT); G._rtT = setTimeout(() => gIr(G.tab), 700); }
-  }).subscribe(st => { G.live = st === 'SUBSCRIBED'; gVivo(); });
+  }).on('postgres_changes', { event:'*', schema:'public', table:'bg_incidentes' }, gOnInc)
+    .on('postgres_changes', { event:'INSERT', schema:'public', table:'bg_checklists' }, gOnChk)
+    .subscribe(st => { G.live = st === 'SUBSCRIBED'; gVivo(); });
 }
-function gDetener(){ clearTimeout(G._rtT); if (G.rt){ try { sb.removeChannel(G.rt); } catch(e){} G.rt = null; } G.live = false; G.cat = null; G.par = null; }
+function gDetener(){ clearTimeout(G._rtT); clearTimeout(G._rtM); G.nInc = 0; if (G.rt){ try { sb.removeChannel(G.rt); } catch(e){} G.rt = null; } G.live = false; G.cat = null; G.par = null; }
 
 /* ═══ HOY (tiempo real) ═══ */
 async function gOrdsDia(todas){
@@ -367,7 +369,9 @@ async function gUni(){
   try { await gCat(); const c = G.cat, ch = Object.fromEntries(c.chof.map(x => [x.colaborador_id, x.nombre]));
     $('g-c').outerHTML = c.uni.map(u => `<div class="card"><div class="row b"><b>${esc(u.bak)}</b><span class="tag ${u.estatus === 'activo' ? 'g' : 'a'}">${esc(u.estatus || '')}</span></div>
       <div class="sec">${esc([u.marca, u.modelo, u.anio].filter(Boolean).join(' ') || 'Sin datos')}${u.tipo ? ' · ' + esc(u.tipo) : ''}</div><div class="mut">${u.placas ? 'Placas ' + esc(u.placas) : 'Sin placas'}${u.niv ? ' · NIV ' + esc(u.niv) : ''}${u.chofer_id ? ' · ' + esc(ch[u.chofer_id] || '') : ''}</div>
-      <div class="row" style="margin-top:10px"><button class="btn sm" onclick="gUniModal('${u.id}')">Editar</button></div></div>`).join('');
+      ${u.foto_path ? `<div style="margin-top:8px">${cmTh(u.foto_path, 90)}</div>` : ''}
+      <div class="row" style="margin-top:10px"><button class="btn sm" onclick="gUniModal('${u.id}')">Editar</button><button class="btn sm" onclick="gUniFotoModal('${u.id}')">${u.foto_path ? 'Cambiar foto' : 'Agregar foto'}</button></div></div>`).join('');
+    cmImgs($('g-body'));
   } catch(e){ $('g-c').innerHTML = `<div class="err show">${esc(e.message)}</div>`; }
 }
 function gUniModal(id){
@@ -375,7 +379,7 @@ function gUniModal(id){
   const f = (k, t, ph) => `<div style="flex:1;min-width:140px"><label class="l">${t}</label><input id="gu-${k}" value="${esc(u[k] || '')}" ${ph ? `placeholder="${ph}"` : ''} autocomplete="off"></div>`;
   gModal(`<h2>${id ? 'Editar ' + esc(u.bak) : 'Nueva unidad'}</h2><div class="row" style="flex-wrap:wrap;gap:0 10px">${f('bak', 'BAK *', 'BAK-37')}${f('placas', 'Placas')}${f('niv', 'NIV')}${f('marca', 'Marca')}${f('modelo', 'Modelo')}${f('anio', 'Año')}${f('tipo', 'Tipo', 'Rabón, Torton…')}
     <div style="flex:1;min-width:140px"><label class="l">Estatus</label><select id="gu-estatus">${est.map(e => `<option ${e === (u.estatus || 'activo') ? 'selected' : ''}>${esc(e)}</option>`).join('')}</select></div></div>
-    <div class="mut" style="margin-top:8px">La foto de la unidad se agrega en la siguiente fase, junto con el checklist.</div><div class="err" id="gu-err">—</div>
+    <div class="mut" style="margin-top:8px">La foto de la unidad se agrega con el botón «Agregar foto» de la tarjeta.</div><div class="err" id="gu-err">—</div>
     <div class="foot"><button class="btn" onclick="gCerrar()">Cancelar</button><button class="btn p" onclick="gUniGuardar()">Guardar</button></div>`);
 }
 async function gUniGuardar(){
