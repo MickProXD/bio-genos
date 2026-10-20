@@ -179,7 +179,7 @@ details>summary::-webkit-details-marker{display:none}
 <script src="mantenimiento.js"></script>
 <script>
 'use strict';
-const APP_VERSION = '2.1.1';
+const APP_VERSION = '2.1.2';
 const SUPABASE_URL = 'https://csjvexyodhoirjimjwrb.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_DUoYx9ZFV6pP_ryZ2g2tSg_1jPXeRZg';   // llave pública: todo el acceso real lo limita RLS
 const TZ = 'America/Mexico_City';
@@ -343,8 +343,11 @@ async function guardarPass(){
   const a = $('pw-1').value, b = $('pw-2').value; hide('pw-err');
   if (a.length < 8) return say('pw-err', 'Mínimo 8 caracteres');
   if (a !== b) return say('pw-err', 'Las contraseñas no coinciden');
-  const { error } = await sb.auth.updateUser({ password:a }); if (error) return say('pw-err', error.message);
-  await sb.from('profiles').update({ debe_cambiar_password:false }).eq('id', U.id);
+  // Se cambia desde el servidor: Supabase exige sesión AAL2 en updateUser si la cuenta tiene verificación en dos pasos (de Bio-centralis) y aquí ya no se usa.
+  try {
+    const { data, error } = await sb.functions.invoke('bg-password', { body:{ nueva:a } });
+    if (error || data?.error){ let m = data?.error; if (!m) try { m = (await error.context.json()).error; } catch(e){} return say('pw-err', esErrorRed(error) ? 'Sin señal. Inténtalo de nuevo.' : (m || 'No se pudo cambiar la contraseña')); }
+  } catch(e){ return say('pw-err', esErrorRed(e) ? 'Sin señal. Inténtalo de nuevo.' : (e.message || 'No se pudo cambiar la contraseña')); }
   U.debePass = false; lsSet('bg_ultimo', U); _passForzado = false; cerrar('m-pass'); toast('Contraseña actualizada', 'success');
 }
 
