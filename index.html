@@ -82,17 +82,6 @@ details>summary::-webkit-details-marker{display:none}
   <div class="mut" style="text-align:center;margin-top:10px" id="inst-ios"></div>
 </div></div>
 
-<!-- VERIFICACIÓN EN DOS PASOS -->
-<div id="v-mfa" class="view"><div class="wrap">
-  <div class="lg"><img src="icon-192.png" alt=""><h1>Verificación</h1><div class="sec">Escribe el código de 6 dígitos de tu app de autenticación.</div></div>
-  <div class="card">
-    <input id="mfa-code" inputmode="numeric" maxlength="6" autocomplete="one-time-code" onkeydown="if(event.key==='Enter')verificarMfa()" style="font-size:22px;text-align:center;letter-spacing:6px">
-    <div class="err" id="mfa-err">—</div>
-    <button class="btn p w" style="margin-top:14px" onclick="verificarMfa()">Verificar</button>
-    <button class="btn w" style="margin-top:8px" onclick="salir(true)">Cancelar</button>
-  </div>
-</div></div>
-
 <!-- APP -->
 <div id="v-app" class="view">
   <div class="top"><img src="icon-192.png" alt=""><b>BIO-GENOS</b><span class="rol" id="top-rol" style="display:none">Gerente</span><span class="sp"></span><span id="net" class="mut" style="color:#d6ead9"><i class="dot"></i><span>En línea</span></span><button class="btn sm" style="background:transparent;color:#fff;border-color:rgba(255,255,255,.4)" onclick="abrirMenu()">Menú</button></div>
@@ -190,7 +179,7 @@ details>summary::-webkit-details-marker{display:none}
 <script src="mantenimiento.js"></script>
 <script>
 'use strict';
-const APP_VERSION = '2.1.0';
+const APP_VERSION = '2.1.1';
 const SUPABASE_URL = 'https://csjvexyodhoirjimjwrb.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_DUoYx9ZFV6pP_ryZ2g2tSg_1jPXeRZg';   // llave pública: todo el acceso real lo limita RLS
 const TZ = 'America/Mexico_City';
@@ -198,7 +187,7 @@ const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { auth:{ persistSes
 
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let U = null, _mfaId = null, _fecha = null, _sinSesion = false;
+let U = null, _fecha = null, _sinSesion = false;
 
 /* ── utilidades ── */
 function show(id){ document.querySelectorAll('.view').forEach(v => v.classList.toggle('on', v.id === id)); window.scrollTo(0,0); }
@@ -242,15 +231,6 @@ async function login(){
   if (error) return say('lg-err', esErrorRed(error) ? 'Sin conexión. Necesitas señal para iniciar sesión.' : 'Correo o contraseña incorrectos');
   await arrancar();
 }
-async function verificarMfa(){
-  hide('mfa-err'); const code = $('mfa-code').value.trim();
-  if (!/^\d{6}$/.test(code)) return say('mfa-err', 'Ingresa el código de 6 dígitos');
-  const { data: ch, error: e1 } = await sb.auth.mfa.challenge({ factorId:_mfaId });
-  if (e1) return say('mfa-err', e1.message);
-  const { error: e2 } = await sb.auth.mfa.verify({ factorId:_mfaId, challengeId:ch.id, code });
-  if (e2) return say('mfa-err', 'Código incorrecto, intenta de nuevo');
-  $('mfa-code').value = ''; await arrancar();
-}
 async function arrancar(){
   let session = null;
   try { ({ data:{ session } } = await sb.auth.getSession()); } catch(e){}
@@ -259,13 +239,6 @@ async function arrancar(){
     if (!navigator.onLine && c){ U = c; _sinSesion = true; return entrar(); }   // sin señal: se abre con lo guardado
     return show('v-login');
   }
-  try {
-    const { data: aal } = await sb.auth.mfa.getAuthenticatorAssuranceLevel();
-    if (aal.currentLevel === 'aal1' && aal.nextLevel === 'aal2'){
-      const { data: f } = await sb.auth.mfa.listFactors(); const t = (f.totp || []).find(x => x.status === 'verified');
-      if (t){ _mfaId = t.id; return show('v-mfa'); }
-    }
-  } catch(e){}
   let perfil = null;
   const { data, error } = await sb.from('profiles').select('*').eq('id', session.user.id).single();
   if (data) perfil = data;
